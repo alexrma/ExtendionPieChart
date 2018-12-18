@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////
-//Version: 	1.1
-//Author:  	Richard Byard
-//Usage:	Pie chart with 3d and other options using the RGraph chart library.
-//Date:		13 Sept 2017
+//Author: Alexrma
+//Based on work:  	Richard Byard
+//Description: Modification of RGraph extension to add additional functions
+//Date:		18 Dic 2018
+//Custom version: 0.1
 ////////////////////////////////////////////////////
 define( [
         // Load the properties.js file using requireJS
@@ -47,7 +48,7 @@ define( [
 			//console.log(layout.qHyperCube.qDataPages[0].qMatrix);
 			//console.log("Paint method")
 			var app = qlik.currApp(this);
-			
+			var that = this;
 			// Get the Number of Dimensions and Measures on the hypercube
 			var numberOfDimensions = layout.qHyperCube.qDimensionInfo.length;
 			//console.log(numberOfDimensions);
@@ -68,12 +69,18 @@ define( [
 			
 			// Get the values of the dimension
 			var dimArray =[];
+			var dimArrayOriginal=[];
 			var measArray =[];
 			var dataArray =[];
 			var porcentajeArray =[];
 			var numIdentif =[];
+			var elementNumber = [];
+			var arrayExplode = [];
 			var sumMedida = 0;			
-			
+			var coloresEntrada = [];
+
+			coloresEntrada =(layout.colores).split(',');
+			console.log(coloresEntrada);
 			
 			for (var i=0; i<numberOfDimValues;i++){					
 				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;			
@@ -83,21 +90,22 @@ define( [
 			}
 
 			for (var i=0; i<numberOfDimValues;i++){
+				elementNumber[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qElemNumber;
 				dimArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qText;
+				dimArrayOriginal[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qText;
 				measArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qText;
 				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;		
 				numIdentif[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qElemNumber;
 				porcentajeArray[i]=(((dataArray[i])/sumMedida)*100).toFixed(2);
+				arrayExplode[i]=0;
 				dimArray[i] = dimArray[i]+' ' + porcentajeArray[i] + '%';
 			}			
 			
-				
-			
+					
 			
 			var dimensionLength=layout.qHyperCube.qDataPages[0].qMatrix.length;
 			
 			var chart;
-			
 			
 			
 		
@@ -171,18 +179,20 @@ define( [
 						case 12: var palette = ["#332288","#6699cc","#88ccee","#44aa99","#117733","#999933","#ddcc77","#661100","#cc6677","#aa4466","#882255","#aa4499"]; break;
 						default: ["#99c867","#e43cd0","#e2402a","#66a8db","#3f1a20","#e5aa87","#3c6b59","#aa2a6b","#e9b02e","#7864dd","#65e93c","#5ce4ba","#d0e0da","#d796dd","#64487b","#e4e72b","#6f7330","#932834","#ae6c7d","#986717","#e3cb70","#408c1d","#dd325f","#533d1c","#2a3c54","#db7127","#72e3e2","#e2c1da","#d47555","#7d7f81","#54ae9b","#e9daa6","#3a8855","#5be66e","#ab39a4","#a6e332","#6c469d","#e39e51","#4f1c42","#273c1c","#aa972e","#8bb32a","#bdeca5","#63ec9b","#9c3519","#aaa484","#72256d","#4d749f","#9884df","#e590b8","#44b62b","#ad5792","#c65dea","#e670ca","#e38783","#29312d","#6a2c1e","#d7b1aa","#b1e7c3","#cdc134","#9ee764","#56b8ce","#2c6323","#65464a","#b1cfea","#3c7481","#3a4e96","#6493e1","#db5656","#747259","#bbabe4","#e33f92","#d0607d","#759f79","#9d6b5e","#8574ae","#7e304c","#ad8fac","#4b77de","#647e17","#b9c379","#8da8b0","#b972d9","#786279","#7ec07d","#916436","#2d274f","#dce680","#759748","#dae65a","#459c49","#b7934a","#51c671","#9ead3f","#969a5c","#b9976a","#46531a","#c0f084","#76c146","#bad0ad"];
 					}*/
-						var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#F2E85B",7:"#FF99FF",8:"#9b59b6",9:"#000000"};
 					
-
+					
+					var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};
+					
 						var palette = numIdentif.map(function(x) {
 						
-							return colores[x];
+							return coloresEntrada[x];
 						});
 					
 					break;
 			}
 			
-			
+			console.log(palette);
+			console.log('Nueva patela de colores');
 			
 			// set shadow color to allow shadow to switch on and off
 			if (layout.shadow) {
@@ -303,25 +313,26 @@ define( [
 							gutterBottom: 50, 
 							linewidth: layout.segmentBorderWidth,
 							textSize: 10,
-							textColor: '#000000',
+							textColor: 'red',
 							strokestyle: segmentBorder2,
 							tooltips: dimArray,
 							tooltipsEvent: 'onmousemove',					
 							labels: labelsArray,						
 							colors: palette,
 							variant: chartVariant,
+							
 							//radius: 100,
 							labelsSticksList: layout.labelSticks,
 							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
-							labelsSticksColors:'#aaa',
-							//radius: 80,
+							labelsSticksColors:false,
+							//radius: 150,
 							shadowOffsety: layout.shadowDepth,
 							shadowColor: shadowYN,
 							// ********************** you can change which segment explodes here, the first dimension in order is currently set [20,,] to explode by 20 pixels
 							exploded: explodeSegment2,
 							textAccessible: true,
-							eventsClick: onClickDimension
-							//eventsMousemove: onMouseMove,
+							eventsClick: onClickDimension,
+							eventsMousemove: onMouseMove,
 						}
 					}).draw();
 					break;
@@ -355,7 +366,7 @@ define( [
 							// ********************** you can change which segment explodes here, the first dimension in order is currently set [20,,] to explode by 20 pixels
 							//exploded: explodeSegment2,
 							textAccessible: false,
-							eventsClick: onClickDimension
+							eventsClick: onClickDimension,
 							//eventsMousemove: onMouseMove,
 						}
 					}).on('draw', function(obj)
@@ -381,10 +392,26 @@ define( [
 			// On Click actions
 			function onClickDimension (e, shape)
 			{
-				var index = shape.index;
-				app.field(dimensionName).toggleSelect(dimArray[index], true);
 				
-				//console.log(measArray);
+								
+				var index = shape.index;
+				var obj = shape.object;
+				
+				
+				that.selectValues(0, elementNumber[index], false);
+				console.log(app.selectionState());
+				console.log(elementNumber[index]);
+				if(arrayExplode[index]!=0){
+					arrayExplode[index] = 0;
+				} else {
+					arrayExplode[index] = 15;
+				}
+				
+				obj.explodeSegment(arrayExplode, 15);
+				//arrayExplode[index]
+				obj.set('exploded', arrayExplode);
+				//obj.explodeSegment(index, layout.explodedSegmentDist);
+				e.stopPropagation();
 			
 
 			}	
@@ -393,9 +420,9 @@ define( [
 			function onMouseMove (e, shape)
 			{
 				
-				var index = shape.index;
-				//self.backendApi.selectValues(0, dimArray[index], true);
-				//app.field(dimensionName).toggleSelect(dimArray[index], true);
+				
+							
+				
 			}					
 			
 			//needed for export

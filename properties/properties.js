@@ -115,26 +115,26 @@ define( [
 	var chartColor = {
 			type: "string",
 			component: "dropdown",
-			label: "Chart Color",
+			label: "Colores",
 			ref: "chartColor",
 			options: [{
 				value: 1,
-				label: "Standard QS Colors"
+				label: "Colores Qlik"
 			}, {
 				value: 2,
-				label: "Red to Yellow Gradient"
+				label: "Gradiente rojo -> amarillo"
 			}, {
 				value: 3,
-				label: "Yellow to Red Gradient"
+				label: "Gradiente amarillo -> rojo"
 			}, {
 				value: 4,
-				label: "Blue to Red Gradient"
+				label: "Gradiente azul -> rojo"
 			}, {
 				value: 5,
-				label: "Red to Blue Gradient"
+				label: "Gradiente rojo -> azul"
 			},{
 				value: 6,
-				label: "3D Color"
+				label: "3D ColorColores 3D"
 			}
 			
 			],
@@ -253,6 +253,13 @@ define( [
 			}],
 			defaultValue: false
 	};
+
+	var colores = {
+		ref: "colores",
+		label: "Colores para dimensión",
+		type: "string",
+		expression: "optional"
+	};
 	
 	
 	var segmentBorderWidth = {
@@ -308,7 +315,8 @@ define( [
 			shadowDepth:shadowDepth,
 			segmentBorder:segmentBorder,
 			segmentBorderWidth:segmentBorderWidth,
-			chartColor:chartColor
+			chartColor:chartColor,
+			colores:colores
 		}
 	
 	};
@@ -332,7 +340,7 @@ define( [
 			sorting: sortingSection,
 			//Custom Sections
 			Options: Options
-			//MyColorPicker: MyColorPicker
+			//MyColorPicker: MyColorPicker,
 			//miscSettings: miscSettings
 
         }
