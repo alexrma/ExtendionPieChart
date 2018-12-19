@@ -43,42 +43,11 @@ define( [
 	// *****************************************************************************
     // Options Section
     // *****************************************************************************
-/* 	var chartTypeList = {
-			type: "string",
-			component: "dropdown",
-			label: "Chart Type",
-			ref: "chartTypeList",
-			options: [{
-				value: "pie",
-				label: "Pie"
-			}, {
-				value: "donut",
-				label: "Donut"
-			}, {
-				value: "pie3d",
-				label: "3D Pie"
-			}, {
-				value: "donut3d",
-				label: "3D Donut"
-			}, {
-				value: "haloPie",
-				label: "Pie Halo"
-			}, {
-				value: "haloDonut",
-				label: "Donut Halo"
-			}
-			],
-			defaultValue: "donut"
-	}; */
 
-	
-	
-
-// ***************** TO BE WORKED ON TO SIMPLIFY CODE AND TO ALLOW MORE COLOR OPTIONS *********************
 	var chartType = {
 			type: "string",
 			component: "dropdown",
-			label: "Chart Type",
+			label: "Tipo de gráfico",
 			ref: "chartType",
 			options: [{
 				value: "pie",
@@ -95,7 +64,7 @@ define( [
 	var chartEffect = {
 			type: "string",
 			component: "dropdown",
-			label: "Chart Effect",
+			label: "Efectos sobre el gráfico",
 			ref: "chartEffect",
 			options: [{
 				value: "2d",
@@ -115,11 +84,11 @@ define( [
 	var chartColor = {
 			type: "string",
 			component: "dropdown",
-			label: "Colores",
+			label: "Tipos de Colores",
 			ref: "chartColor",
 			options: [{
 				value: 1,
-				label: "Colores Qlik"
+				label: "Colores personalizados"
 			}, {
 				value: 2,
 				label: "Gradiente rojo -> amarillo"
@@ -145,7 +114,7 @@ define( [
 	var chartLabels = {
 			type: "boolean",
 			component: "switch",
-			label: "Show Chart Labels",
+			label: "Mostrar etiquetas",
 			ref: "chartLabels",
 			options: [{
 				value: true,
@@ -160,7 +129,7 @@ define( [
 	var labelSticks = {
 			type: "boolean",
 			component: "switch",
-			label: "Show Labels Sticks",
+			label: "Mostrar guias de las etiquetas",
 			ref: "labelSticks",
 			options: [{
 				value: true,
@@ -175,7 +144,7 @@ define( [
 	var explodeSegment = {
 			type: "string",
 			component: "dropdown",
-			label: "Explode Segment",
+			label: "Expandir segmento",
 			ref: "explodeSegment",
 			options: [{
 				value: 0,
@@ -204,7 +173,7 @@ define( [
 	var shadow = {
 			type: "boolean",
 			component: "switch",
-			label: "Show Shadow",
+			label: "Mostrar sombra",
 			ref: "shadow",
 			options: [{
 				value: true,
@@ -219,7 +188,7 @@ define( [
 	var shadowDepth = {
 			type: "string",
 			component: "dropdown",
-			label: "Shadow Depth",
+			label: "Profundidad de la sombra",
 			ref: "shadowDepth",
 			options: [{
 				value: 5,
@@ -242,7 +211,7 @@ define( [
 	var segmentBorder = {
 			type: "boolean",
 			component: "switch",
-			label: "Show Segment Border",
+			label: "Mostrar borde del segmento",
 			ref: "segmentBorder",
 			options: [{
 				value: true,
@@ -265,7 +234,7 @@ define( [
 	var segmentBorderWidth = {
 			type: "string",
 			component: "dropdown",
-			label: "Segment Border Width",
+			label: "Ancho del borde del segmento",
 			ref: "segmentBorderWidth",
 			options: [{
 				value: 2,

@@ -163,24 +163,8 @@ define( [
 				case 6: // 3d effect colors
 					var palette = palette6;
 					break;
-				case 1: // standard QS dim colours
-					/*switch(numberOfDimValues) {
-						case 1: var palette = ["#4477aa"]; break;
-						case 2: var palette = ["#4477aa","#cc6677"]; break;
-						case 3: var palette = ["#4477aa","#ddcc77","#cc6677"]; break;
-						case 4: var palette = ["#4477aa","#117733","#ddcc77","#cc6677"]; break;						
-						case 5: var palette = ["#332288","#88ccee","#117733","#ddcc77","#cc6677"]; break;
-						case 6: var palette = ["#332288","#88ccee","#117733","#ddcc77","#cc6677","#aa4499"]; break;
-						case 7: var palette = ["#332288","#44aa99","#88ccee","#117733","#ddcc77","#cc6677","#aa4499"]; break;
-						case 8: var palette = ["#332288","#44aa99","#88ccee","#117733","#999933","#ddcc77","#cc6677","#aa4499"]; break;
-						case 9: var palette = ["#332288","#44aa99","#88ccee","#117733","#999933","#ddcc77","#cc6677","#882255","#aa4499"]; break;
-						case 10: var palette = ["#FF99FF","#E74C3C","#2471A3","#9b59b6","#63D459","#000000","#F2E85B","#FF8F11","#117A65","#76D7C4"]; break;
-						case 11: var palette = ["#332288","#6699cc","#44aa99","#88ccee","#117733","#999933","#ddcc77","#661100","#cc6677","#882255","#aa4499"]; break;
-						case 12: var palette = ["#332288","#6699cc","#88ccee","#44aa99","#117733","#999933","#ddcc77","#661100","#cc6677","#aa4466","#882255","#aa4499"]; break;
-						default: ["#99c867","#e43cd0","#e2402a","#66a8db","#3f1a20","#e5aa87","#3c6b59","#aa2a6b","#e9b02e","#7864dd","#65e93c","#5ce4ba","#d0e0da","#d796dd","#64487b","#e4e72b","#6f7330","#932834","#ae6c7d","#986717","#e3cb70","#408c1d","#dd325f","#533d1c","#2a3c54","#db7127","#72e3e2","#e2c1da","#d47555","#7d7f81","#54ae9b","#e9daa6","#3a8855","#5be66e","#ab39a4","#a6e332","#6c469d","#e39e51","#4f1c42","#273c1c","#aa972e","#8bb32a","#bdeca5","#63ec9b","#9c3519","#aaa484","#72256d","#4d749f","#9884df","#e590b8","#44b62b","#ad5792","#c65dea","#e670ca","#e38783","#29312d","#6a2c1e","#d7b1aa","#b1e7c3","#cdc134","#9ee764","#56b8ce","#2c6323","#65464a","#b1cfea","#3c7481","#3a4e96","#6493e1","#db5656","#747259","#bbabe4","#e33f92","#d0607d","#759f79","#9d6b5e","#8574ae","#7e304c","#ad8fac","#4b77de","#647e17","#b9c379","#8da8b0","#b972d9","#786279","#7ec07d","#916436","#2d274f","#dce680","#759748","#dae65a","#459c49","#b7934a","#51c671","#9ead3f","#969a5c","#b9976a","#46531a","#c0f084","#76c146","#bad0ad"];
-					}*/
-					
-					
+				case 1: // Custom colors
+									
 					var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};
 					
 						var palette = numIdentif.map(function(x) {
@@ -191,8 +175,7 @@ define( [
 					break;
 			}
 			
-			console.log(palette);
-			console.log('Nueva patela de colores');
+			
 			
 			// set shadow color to allow shadow to switch on and off
 			if (layout.shadow) {

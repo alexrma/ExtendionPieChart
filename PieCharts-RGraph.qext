@@ -1,11 +1,11 @@
 {
-    "name" : "Pie Charts - RGraph",
-    "description" : "Extended pie and donut chart capability including 3D and exploded segments. Uses the RGraph chart library",
+    "name" : "Gráfico tarta - RGraph",
+    "description" : "Adaptando y extendiendo las posibilidades del gráfico de tarta. Usa la librería RGraph",
     "icon" : "pie-chart",
     "type" : "visualization",
-    "version": "1.1",
+    "version": "0.1",
     "preview" : "pie-chart",
-    "author": "Richard Byard"
+    "author": "Alejandro rm - Basado en la extendión de Richard Byard"
 }
 
 
