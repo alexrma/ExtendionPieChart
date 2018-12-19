@@ -306,12 +306,9 @@ define( [
 			dimensions: dimensions,
             measures: measures,
             appearance: appearanceSection,
-			sorting: sortingSection,
-			//Custom Sections
+			sorting: sortingSection,			
 			Options: Options
-			//MyColorPicker: MyColorPicker,
-			//miscSettings: miscSettings
-
+			
         }
     };
 

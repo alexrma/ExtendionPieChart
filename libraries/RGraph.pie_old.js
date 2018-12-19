@@ -1,4 +1,4 @@
-// version: 2018-10-26
+// version: 2017-02-18
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use and there are no restrictions on what you can do with it!  |
+    * | totally free to use!                                                           |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -86,7 +86,7 @@
             'chart.labels.sticks':          false,
             'chart.labels.sticks.length':   7,
             'chart.labels.sticks.colors':   null,
-            'chart.labels.sticks.usecolors': false,
+            'chart.labels.sticks.usecolors': true,
             'chart.labels.sticks.linewidth': 1,
             'chart.labels.sticks.hlength':  5,
             'chart.labels.sticks.list':     false,
@@ -102,7 +102,7 @@
             'chart.labels.ingraph.radius':  null,
             'chart.labels.center':            null,
             'chart.labels.center.size':       26,
-            'chart.labels.center.font':       'Arial, Verdana, sans-serif',
+            'chart.labels.center.font':       'Segoe UI, Arial, Verdana, sans-serif',
             'chart.labels.center.color':      'black',
             'chart.labels.center.italic':     false,
             'chart.labels.center.bold':       false,
@@ -132,7 +132,7 @@
             'chart.text.font':              'Segoe UI, Arial, Verdana, sans-serif',
             'chart.text.accessible':               true,
             'chart.text.accessible.overflow':      'visible',
-            'chart.text.accessible.pointerevents': false,
+            'chart.text.accessible.pointerevents': true,
             'chart.contextmenu':            null,
             'chart.tooltips':               null,
             'chart.tooltips.event':         'onclick',
@@ -634,8 +634,8 @@
             * Fire the onfirstdraw event
             */
             if (this.firstDraw) {
-                this.firstDraw = false;
                 RG.fireCustomEvent(this, 'onfirstdraw');
+                this.firstDraw = false;
                 this.firstDrawFunc();
             }
 
@@ -752,12 +752,7 @@
     
     
             // Keep hold of the angles
-            this.angles.push([
-                subTotal,
-                subTotal + radians,
-                this.centerx + x,
-                this.centery + y
-            ]);
+            this.angles.push([subTotal, subTotal + radians, this.centerx + x, this.centery + y]);
     
     
             
@@ -875,7 +870,7 @@
                     if (   typeof prop['chart.labels.colors'] === 'object' && prop['chart.labels.colors'] && prop['chart.labels.colors'][i]) {
                         co.fillStyle = prop['chart.labels.colors'][i];
                     }
-
+    
 
                     RG.text2(this, {
                           font: font,
@@ -894,10 +889,6 @@
                 co.fill();
             }
         };
-
-
-
-
 
 
 
@@ -929,13 +920,13 @@
 
 
             //
-            // Draw the right hand side labels
+            // Draw the right hand side labels first
             //
             for (var i=0; i<this.angles.length; ++i) {
 
                 var angle          = this.angles[i][0] + ((this.angles[i][1] - this.angles[i][0]) / 2), // Midpoint
                     endpoint_inner = RG.getRadiusEndPoint(centerx, centery, angle, radius + 5),
-                    endpoint_outer = RG.getRadiusEndPoint(centerx, centery, angle, radius + 50),
+                    endpoint_outer = RG.getRadiusEndPoint(centerx, centery, angle, radius + 10),
                     explosion      = [
                         (typeof prop['chart.exploded'] === 'number' ? prop['chart.exploded'] : prop['chart.exploded'][i]),
                         (ma.cos(angle) * (typeof prop['chart.exploded'] === 'number' ? prop['chart.exploded'] : prop['chart.exploded'][i])),
@@ -1016,23 +1007,23 @@
                         ret.node.__index__ = labels_right[i][0];
                     }
 
-                    // This draws the stick
-                    pa2(co, 'lc round lw % b m % % qc % % % % s %',
+    
+                    pa2(co, 'lc round lw % b m % % l % % l % % l % % s %',
                         
                         prop['chart.labels.sticks.linewidth'],
                         
                         labels_right[i][3][0] + explosionX,
                         labels_right[i][3][1] + explosionY,
-                    
+    
                         labels_right[i][4][0] + explosionX,
                         labels_right[i][4][1] + explosionY,
                         
-                        //this.centerx + this.radius + 25 + explosionX,
-                        //ma.round(labels_right[i][4][1] + explosionY),
+                        this.centerx + this.radius + 25 + explosionX,
+                        ma.round(labels_right[i][4][1] + explosionY),
                         
                         ret.x - 5 ,
                         ret.y + (ret.height / 2),
-                    
+    
                         labels_right[i][5]
                     );
                 }
@@ -1051,7 +1042,7 @@
             //
             
             
-
+            
             
             
             // Calculate how much space there is for each label
@@ -1083,15 +1074,15 @@
                     }
     
                     pa2(co,
-                        'lw % b m % % qc % % % % s %',
+                        'lw % b m % % l % % l % % l % % s %',
                         
                         prop['chart.labels.sticks.linewidth'],
                         
                         labels_left[i][3][0] + explosionX,
                         labels_left[i][3][1] + explosionY,
     
-                        //labels_left[i][4][0] + explosionX,
-                        //labels_left[i][4][1] + explosionY,
+                        labels_left[i][4][0] + explosionX,
+                        labels_left[i][4][1] + explosionY,
                         
                         this.centerx - this.radius - 25 + explosionX,
                         ma.round(labels_left[i][4][1] + explosionY),
@@ -1135,9 +1126,9 @@
                 colors    = prop['chart.colors'],
                 cx        = this.centerx,
                 cy        = this.centery,
-                radius    = this.radius,
-                points    = [],
-                linewidth = prop['chart.labels.sticks.linewidth']
+                radius     = this.radius,
+                points     = [],
+                linewidth  = prop['chart.labels.sticks.linewidth']
 
             for (var i=0,len=this.angles.length; i<len; ++i) {
             
@@ -1180,7 +1171,7 @@
                 */
                 var stickLength = typeof prop['chart.labels.sticks.length'] === 'object' ? prop['chart.labels.sticks.length'][i] : prop['chart.labels.sticks.length'];
                 
-
+                
                 points[0] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + extra + offset);
                 points[1] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra - 5);
                 
@@ -1194,33 +1185,18 @@
                     points[2][1]
                 ];
 
-
+                
                 co.moveTo(points[0][0], points[0][1]);
-                co.quadraticCurveTo(
-                    points[2][0],
-                    points[2][1],
-                    points[4][0],
-                    points[4][1]
-                );
+                co.quadraticCurveTo(points[2][0], points[2][1], points[4][0], points[4][1]);
     
                 co.stroke();
                 
                 /**
                 * Save the stick end coords
                 */
-                this.coordsSticks[i] = [
-                    points[0],
-                    points[1],
-                    points[2],
-                    points[3],
-                    points[4]
-                ];
+                this.coordsSticks[i] = [points[0],points[1], points[2], points[3], points[4]];
             }
         };
-
-
-
-
 
 
 
@@ -1845,8 +1821,8 @@
     
             prop['chart.strokestyle']                  = this.parseSingleColorForGradient(prop['chart.strokestyle']);
             prop['chart.highlight.stroke']             = this.parseSingleColorForGradient(prop['chart.highlight.stroke']);
-            prop['chart.highlight.style.twod.fill']    = this.parseSingleColorForGradient(prop['chart.highlight.style.twod.fill']);
-            prop['chart.highlight.style.twod.stroke']  = this.parseSingleColorForGradient(prop['chart.highlight.style.twod.stroke']);
+            prop['chart.highlight.style.twod.fill']      = this.parseSingleColorForGradient(prop['chart.highlight.style.twod.fill']);
+            prop['chart.highlight.style.twod.stroke']    = this.parseSingleColorForGradient(prop['chart.highlight.style.twod.stroke']);
             prop['chart.labels.ingraph.bounding.fill'] = this.parseSingleColorForGradient(prop['chart.labels.ingraph.bounding.fill']);
             prop['chart.labels.ingraph.color']         = this.parseSingleColorForGradient(prop['chart.labels.ingraph.color']);
         };
@@ -1870,16 +1846,12 @@
         */
         this.parseSingleColorForGradient = function (color)
         {
+
             if (!color || typeof(color) != 'string') {
                 return color;
             }
     
             if (color.match(/^gradient\((.*)\)$/i)) {
-
-                // Allow for JSON gradients
-                if (color.match(/^gradient\(({.*})\)$/i)) {
-                    return RGraph.parseJSONGradient({object: this, def: RegExp.$1});
-                }
 
                 var parts = RegExp.$1.split(':');
     
@@ -1891,15 +1863,7 @@
                 }
 
                 // Create the gradient
-                var grad = co.createRadialGradient(
-                    this.centerx,
-                    this.centery,
-                    radius_start,
-                    this.centerx,
-                    this.centery,
-                    Math.min(ca.width - prop['chart.gutter.left'] - prop['chart.gutter.right'],
-                    ca.height - prop['chart.gutter.top'] - prop['chart.gutter.bottom']) / 2
-                );
+                var grad = co.createRadialGradient(this.centerx, this.centery, radius_start, this.centerx, this.centery, Math.min(ca.width - prop['chart.gutter.left'] - prop['chart.gutter.right'], ca.height - prop['chart.gutter.top'] - prop['chart.gutter.bottom']) / 2);
     
     
                 var diff = 1 / (parts.length - 1);

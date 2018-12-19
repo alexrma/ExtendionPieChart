@@ -101,7 +101,7 @@ define( [
 				numIdentif[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qElemNumber;
 				porcentajeArray[i]=(((dataArray[i])/sumMedida)*100).toFixed(2);
 				arrayExplode[i]=0;
-				dimArray[i] = dimArray[i]+' ' + porcentajeArray[i] + '%';
+				dimArray[i] = dimArray[i]+' ' + String(porcentajeArray[i]) + '%';
 			}	
 			
 
@@ -281,7 +281,7 @@ define( [
 							gutterBottom: 50, 
 							linewidth: layout.segmentBorderWidth,
 							textSize: 10,
-							textColor: 'red',
+							textColor: '#595959',
 							strokestyle: segmentBorder2,
 							tooltips: dimArray,
 							tooltipsEvent: 'onmousemove',					
@@ -359,16 +359,11 @@ define( [
 			// On Click actions
 			function onClickDimension (e, shape)
 			{
-				//var app = qlik.currApp(this);
-				//var that = this;
-				
-						
+									
 				var index = shape.index;
 				var obj = shape.object;
-				
-				
-				that.selectValues(0, [elementNumber[index]],true);
-				
+								
+				that.selectValues(0, [elementNumber[index]],true);				
 			
 				if(arrayExplode[index]!=0){
 					arrayExplode[index] = 0;
@@ -376,12 +371,9 @@ define( [
 					arrayExplode[index] = 15;
 				}
 				
-				obj.explodeSegment(arrayExplode, 15);
-				//arrayExplode[index]
-				obj.set('exploded', arrayExplode);
-				//obj.explodeSegment(index, layout.explodedSegmentDist);
-				e.stopPropagation();
-			
+				obj.explodeSegment(arrayExplode, 15);				
+				obj.set('exploded', arrayExplode);				
+				e.stopPropagation();			
 
 			}	
 			
