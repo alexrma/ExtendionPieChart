@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -158,18 +158,26 @@ ca.style.left  = 0;
 
                     if (ca.resizing.mousedown) {
     
-                        var newWidth  = ca.width + (e.pageX - ca.resizing.originalx);
-                        var newHeight = ca.height + (e.pageY - ca.resizing.originaly);
+                        var newWidth  = ca.width + (e.pageX - ca.resizing.originalx),
+                            newHeight = ca.height + (e.pageY - ca.resizing.originaly),
+                            minWidth  = obj.get('resizableMinwidth'),
+                            minHeight = obj.get('resizableMinheight');
 
-                        if (    newWidth > (ca.resizing.originalw / 2)
-                            && (typeof obj.get('resizableMaxwidth') === 'number' ? newWidth < obj.get('resizableMaxwidth') : true)
-                           ) {
+                        // Check for maximum width
+                        if (newWidth > (ca.resizing.originalw / 2) && (typeof obj.get('resizableMaxwidth') === 'number' ? newWidth < obj.get('resizableMaxwidth') : true) &&
+                            (typeof minWidth === 'number' ? newWidth > minWidth : true)
+                            ) {
                             ca.resizing.div.style.width = newWidth + 'px';
                         }
                         
-                        if (newHeight > (ca.resizing.originalh / 2) && (typeof obj.get('resizableMaxheight') === 'number' ? newHeight < obj.get('resizableMaxheight') : true) ) {
+                        // Check for maximum height
+                        if (newHeight > (ca.resizing.originalh / 2) && (typeof obj.get('resizableMaxheight') === 'number' ? newHeight < obj.get('resizableMaxheight') : true) &&
+                            (typeof minHeight === 'number' ? newHeight > minHeight : true)
+                            ) {
                             ca.resizing.div.style.height = newHeight + 'px';
                         }
+                        
+
                         
                         RG.fireCustomEvent(ca.__object__, 'onresize');
                     }

@@ -168,6 +168,22 @@ define( [
 			}
 			]
 	};
+
+	var labelSticksDefColor = {
+			type: "boolean",
+			component: "switch",
+			label: "Labels Sticks Default Colors",
+			ref: "labelSticksDefColor",
+			options: [{
+				value: true,
+				label: "On"
+			}, {
+				value: false,
+				label: "Off"
+			}],
+			defaultValue: true
+		
+	};
 	
 	
 	var shadow = {
@@ -229,6 +245,17 @@ define( [
 		type: "string",
 		expression: "optional"
 	};
+
+	var labelsSticksLength = {		
+			type: "number",
+			component: "slider",
+			label: "Labels Sticks Length",
+			ref: "labelsSticksLength",
+			min: 0,
+			max: 50,
+			step: 1,
+			defaultValue: 8		
+		};
 	
 	
 	var segmentBorderWidth = {
@@ -285,7 +312,9 @@ define( [
 			segmentBorder:segmentBorder,
 			segmentBorderWidth:segmentBorderWidth,
 			chartColor:chartColor,
-			colores:colores
+			colores:colores,
+			labelSticksDefColor:labelSticksDefColor,
+			labelsSticksLength:labelsSticksLength
 		}
 	
 	};

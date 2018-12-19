@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -66,6 +66,7 @@
         // Various config type stuff
         this.properties =
         {
+            'chart.background.barcount':    null,
             'chart.background.barcolor1':   'rgba(0,0,0,0)',
             'chart.background.barcolor2':   'rgba(0,0,0,0)',
             'chart.background.grid':        true,
@@ -97,7 +98,7 @@
             'chart.axis.color':             'black',
             'chart.axis.linewidth':         1,
             'chart.gutter.top':             25,
-            'chart.gutter.bottom':          30,
+            'chart.gutter.bottom':          35,
             'chart.gutter.left':            25,
             'chart.gutter.right':           25,
             'chart.labels':                 null,
@@ -125,10 +126,10 @@
             'chart.text.angle':             0,
             'chart.text.color':             'black', // Gradients aren't supported for this color
             'chart.text.size':              12,
-            'chart.text.font':              'Segoe UI, Arial, Verdana, sans-serif',
+            'chart.text.font':              'Arial, Verdana, sans-serif',
             'chart.text.accessible':              true,
             'chart.text.accessible.overflow':     'visible',
-            'chart.text.accessible.pointerevents': true,
+            'chart.text.accessible.pointerevents': false,
             'chart.ymin':                   0,
             'chart.ymax':                   null,
             'chart.title':                  '',
@@ -423,9 +424,7 @@
                 }
             }
 
-            /**
-            * lineWidth doesn't appear to like a zero setting
-            */
+            // lineWidth doesn't appear to like a zero setting
             if (name.toLowerCase() == 'chart.linewidth' && value == 0) {
                 value = 0.0001;
             }
@@ -613,6 +612,14 @@
             if (prop['chart.labels.ingraph']) {
                 RG.DrawInGraphLabels(this);
             }
+            
+            
+            //
+            // Add the attribution (if textAccessible is enabled
+            //
+            //RG.attribution(this);
+
+
 
 
             /**
@@ -633,8 +640,8 @@
             * Fire the onfirstdraw event
             */
             if (this.firstDraw) {
-                RG.fireCustomEvent(this, 'onfirstdraw');
                 this.firstDraw = false;
+                RG.fireCustomEvent(this, 'onfirstdraw');
                 this.firstDrawFunc();
             }
 
@@ -2338,8 +2345,22 @@ co.lineTo(
 
 
                     return {
-                        0: obj, 1: left, 2: top, 3: width, 4: height, 5: i,
-                        'object': obj, 'x': left, 'y': top, 'width': width, 'height': height, 'index': i, 'tooltip': tooltip, 'index_adjusted': idx, 'dataset': dataset
+                        0: obj,
+                        1: left,
+                        2: top,
+                        3: width,
+                        4: height,
+                        5: i,
+                        
+                    object: obj,
+                         x: left,
+                         y: top,
+                     width: width,
+                    height: height,
+                     index: i,
+                   tooltip: tooltip,
+            index_adjusted: idx,
+                   dataset: dataset
                     };
                 }
             }
@@ -2664,6 +2685,10 @@ co.lineTo(
 
 
 
+
+
+
+
         /**
         * Use this function to reset the object to the post-constructor state. Eg reset colors if
         * need be etc
@@ -2674,8 +2699,16 @@ co.lineTo(
 
 
 
+
+
+
+
+
         /**
-        * This parses a single color value
+        * This parses a single color value. This method can also parse the new
+        * JSON gradient syntax.
+        * 
+        * @param string The color to parse
         */
         this.parseSingleColorForGradient = function (color)
         {
@@ -2684,6 +2717,13 @@ co.lineTo(
             }
 
             if (color.match(/^gradient\((.*)\)$/i)) {
+
+
+                // Allow for JSON gradients
+                if (color.match(/^gradient\(({.*})\)$/i)) {
+                    return RGraph.parseJSONGradient({object: this, def: RegExp.$1});
+                }
+
 
                 var parts = RegExp.$1.split(':');
 
@@ -2701,6 +2741,10 @@ co.lineTo(
 
             return grad ? grad : color;
         };
+
+
+
+
 
 
 
@@ -3433,6 +3477,10 @@ co.lineTo(
 
 
 
+
+
+
+
         //
         // Draws error-bars for the Bar and Line charts
         //
@@ -3721,13 +3769,13 @@ co.lineTo(
         for (var i=0; i<this.objects.length; ++i) {
             if (this.objects[i].properties['chart.combinedchart.effect']) {
 
-                var options = this.objects[i].properties['chart.combinedchart.effect.options'] ? eval('(' + this.objects[i].properties['chart.combinedchart.effect.options'] + ')') : null;
+                // The options must be given as a string because of the
+                // RGraph configuration system
+                var options  = this.objects[i].properties['chart.combinedchart.effect.options'] ? eval('(' + this.objects[i].properties['chart.combinedchart.effect.options'] + ')') : null,
+                    callback = this.objects[i].properties['chart.combinedchart.effect.callback'],
+                    func     = this.objects[i].properties['chart.combinedchart.effect'];
 
-                (this.objects[i][this.objects[i].properties['chart.combinedchart.effect']])
-                (
-                    options,
-                    this.objects[i].properties['chart.combinedchart.effect.callback']
-                )
+                (this.objects[i][func])(options, callback);
             } else {
                 this.objects[i].draw();
             }

@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -161,9 +161,10 @@
                 var objects = RG.ObjectRegistry.getObjectsByXY(e);
                 //var objects = RG.ObjectRegistry.getObjectsByCanvasID(e.target.id);
 
+
                 if (objects) {
                     for (var i=0,len=objects.length; i<len; i+=1) {
-                        
+
                         var obj = objects[i],
                             id  = objects[i].id;
 
@@ -315,13 +316,26 @@
     
 
                         var shape = obj.getShape(e);
-                        
+
+                        // If the object has changed (based on the UID) then
+                        // fire the prior objects mouseout event
+                        if (RG.last_mouseover_uid && RG.last_mouseover_uid !== obj.uid) {
+
+                            RG.fireCustomEvent(RG.last_mouseover_object, 'onmouseout');
+
+                            RG.last_mouseover_object.__mouseover_shape_index__ = null;
+                            RG.last_mouseover_object.__mouseover_shape__       = null;
+                            RG.last_mouseover_object = null;
+                            RG.last_mouseover_uid    = null;
+                        }
+
                         // Fire the onmouseout event if necessary
                         if (
-                            (!shape && typeof obj.__mouseover_shape_index__ === 'number') ||
-                            (shape && typeof obj.__mouseover_shape_index__ === 'number' && shape.index !== obj.__mouseover_shape_index__)
-                            ) {
+                               (!shape && typeof obj.__mouseover_shape_index__ === 'number')
+                            || (shape && typeof obj.__mouseover_shape_index__ === 'number' && shape.index !== obj.__mouseover_shape_index__)
                             
+                            ) {
+
                             RG.fireCustomEvent(obj, 'onmouseout');
                         }
 
@@ -462,17 +476,24 @@
 
                             obj.__mouseover_shape_index__ = null;
                             RG.__mouseover_objects__      = [];
+                            RG.last_mouseover_uid         = null;
+                            RG.last_mouseover_object      = null;
                         }
 
                         if (typeof RG.__mouseover_objects__ === 'undefined') {
                             RG.__mouseover_objects__ = [];
+                            RG.last_mouseover_uid    = null;
+                            RG.last_mouseover_object = null;
                         }
 
 
                         if (shape) {
                             if ((obj.__mouseover_shape_index__ === shape.index) === false) {
 
+                                obj.__mouseover_shape__       = shape;
                                 obj.__mouseover_shape_index__ = shape.index;
+                                RG.last_mouseover_uid    = obj.uid;
+                                RG.last_mouseover_object = obj;
                                 RG.__mouseover_objects__.push(obj);
 
                                 if (func) func(e, shape);
@@ -498,6 +519,8 @@
                         } else {
                             obj.__mouseover_shape_index__ = null;
                             RG.__mouseover_objects__      = [];
+                            RG.last_mouseover_uid         = null;
+                            RG.last_mouseover_object      = null;
                         }
 
 
@@ -595,6 +618,8 @@
                     }
 
                     RG.__mouseover_objects__ = [];
+                    RG.last_mouseover_uid         = null;
+                    RG.last_mouseover_object      = null;
                 }
 
 
@@ -705,16 +730,16 @@
                                         var mouseXY = RG.getMouseXY(e);
 
                                         RG.Registry.set('chart.adjusting.gantt', {
-                                            index: shape.index,
-                                            subindex: shape.subindex,
-                                            object: obj,
-                                            mousex: mouseXY[0],
-                                            mousey: mouseXY[1],
-                                            event: data,
-                                            event_start: data[0],
-                                            event_duration: data[1],
-                                            mode: (mouseXY[0] > (shape['x'] + shape['width'] - 5) ? 'resize' : 'move'),
-                                            shape: shape
+                                            index:          shape.index,
+                                            subindex:       shape.subindex,
+                                            object:         obj,
+                                            mousex:         mouseXY[0],
+                                            mousey:         mouseXY[1],
+                                            event:          data,
+                                            event_start:    data.start,
+                                            event_duration: data.duration,
+                                            mode:           (mouseXY[0] > (shape['x'] + shape['width'] - 5) ? 'resize' : 'move'),
+                                            shape:          shape
                                         });
                                     }
                                     break;
@@ -898,6 +923,10 @@
     RG.evaluateCursor =
     RG.EvaluateCursor = function (e)
     {
+        if (e.rgraph_evaluateCursor === false) {
+            return;
+        }
+
         var obj     = null;
         var mouseXY = RG.getMouseXY(e);
         var mouseX  = mouseXY[0];
@@ -1293,6 +1322,14 @@
                 } else {
                     div.style.left = canvasXY[0] + gutterLeft + 3 + 'px';
                     div.style.top  = canvasXY[1] + gutterTop + 3 + 'px';
+                }
+
+                // Use the formatter functions if defined. This allows the user to format them as they wish
+                if (typeof prop['chart.crosshairs.coords.formatter.x'] === 'function') {
+                    xCoord = (prop['chart.crosshairs.coords.formatter.x'])({object: obj, value: parseInt(xCoord)});
+                }
+                if (typeof prop['chart.crosshairs.coords.formatter.y'] === 'function') {
+                    yCoord = (prop['chart.crosshairs.coords.formatter.y'])({object: obj, value: parseInt(yCoord)});
                 }
 
                 div.innerHTML = '<span style="color: #666">' + prop['chart.crosshairs.coords.labels.x'] + ':</span> ' + xCoord + '<br><span style="color: #666">' + prop['chart.crosshairs.coords.labels.y'] + ':</span> ' + yCoord;

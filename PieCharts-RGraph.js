@@ -18,12 +18,13 @@ define( [
 		'./libraries/RGraph.common.dynamic',
 		'./libraries/RGraph.common.tooltips',
 		'./libraries/RGraph.common.resizing',
-		//,'./libraries/RGraph.common.key'
+		,'./libraries/RGraph.common.key',
+		,"./libraries/RGraph.drawing.rect",
 		'./libraries/RGraph.pie'
 		
     ],
 	
-    function ( $, qlik, props, initProps) {
+    function ( $, qlik, props, initProps,RCommonCore, RCommonDynamic, RCommonTooltips, RCommonresizable, RCommonKey, RPie, RBar, RDRRect, RFunnel) {
         'use strict';	
 		//Inject Stylesheet into header of current document
 		//$( '<style>' ).html(styleSheet).appendTo( 'head' );
@@ -80,12 +81,14 @@ define( [
 			var arrayExplode = [];
 			var sumMedida = 0;			
 			var coloresEntrada = [];
+			var labelsSticksLength = 0;
 
 			coloresEntrada =(layout.colores).split(',');
 			
 			
 			for (var i=0; i<numberOfDimValues;i++){					
-				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;			
+				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;		
+				
 			}
 			for (var i = 0; i < dataArray.length; i++) {
 				sumMedida += dataArray[i]
@@ -184,8 +187,13 @@ define( [
 			} else {
 				var shadowYN = 'rgba(0,0,0,0)';
 			}
-			//console.log(shadowYN);
-			
+			// set stick color lenth
+				if (layout.labelsSticksLength) {
+					var labelsSticksLength = layout.labelsSticksLength;
+				} else {
+					var labelsSticksLength = 10;
+				}
+				console.log(labelsSticksLength);
 			
 			// set exploding segments based off easy selection variable (will not store string required)
 			switch(layout.explodeSegment) {
@@ -225,7 +233,7 @@ define( [
 			} else {
 				var labelsArray = [];
 			}
-			layout.labelSticks
+			
 			
 	
 			
@@ -266,10 +274,11 @@ define( [
 
 			
 			RGraph.Reset(document.getElementById(tmpCVSID));
-		
+
+			console.log('Antes del switch '+labelsSticksLength);
 			
 			switch(chartTypeEffect) {
-				// Draws 3d pie chart
+				// Draws default pie chart
 				case "Default":
 					chart = new RGraph.Pie({
 						id: tmpCVSID,
@@ -287,12 +296,12 @@ define( [
 							tooltipsEvent: 'onmousemove',					
 							labels: labelsArray,						
 							colors: palette,
-							variant: chartVariant,
-							
+							variant: chartVariant,							
 							//radius: 100,
 							labelsSticksList: layout.labelSticks,
 							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
-							labelsSticksColors:false,
+							labelsSticksColors:layout.labelSticksDefColor,
+							labelsSticksLength: 1,
 							//radius: 150,
 							shadowOffsety: layout.shadowDepth,
 							shadowColor: shadowYN,							
@@ -330,7 +339,6 @@ define( [
 							//radius: 80,
 							shadowOffsety: layout.shadowDepth,
 							shadowColor: shadowYN,
-							// ********************** you can change which segment explodes here, the first dimension in order is currently set [20,,] to explode by 20 pixels
 							//exploded: explodeSegment2,
 							textAccessible: false,
 							eventsClick: onClickDimension,

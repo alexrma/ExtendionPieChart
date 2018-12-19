@@ -851,7 +851,7 @@
                     */
                     var x = cx + explosion_offsetx + ((r + 10)* Math.cos(a)) + (prop['chart.labels.sticks'] ? (a < RG.HALFPI || a > (RG.TWOPI + RG.HALFPI) ? 2 : -2) : 0),
                         y = cy + explosion_offsety + (((r + 10) * Math.sin(a)));
-
+                        
 
 
 

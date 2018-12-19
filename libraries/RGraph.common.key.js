@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -70,6 +70,9 @@
         
         key    = key_non_null;
         colors = colors_non_null;
+        
+        // The key does not use accessible text
+        var textAccessible = false;
 
 
 
@@ -106,27 +109,26 @@
         */
         function DrawKey_graph (obj, key, colors)
         {
-            var text_size   = typeof(prop['chart.key.text.size']) == 'number' ? prop['chart.key.text.size'] : prop['chart.text.size'];
-            var text_italic = prop['chart.key.text.italic'] ?  true : false
-            var text_bold   = prop['chart.key.text.bold'] ?  true : false
-            var text_font   = prop['chart.key.text.font'] || prop['chart.key.font'] || prop['chart.text.font'];
+            var text_size   = typeof(prop['chart.key.text.size']) == 'number' ? prop['chart.key.text.size'] : prop['chart.text.size'],
+                text_italic = prop['chart.key.text.italic'] ?  true : false,
+                text_bold   = prop['chart.key.text.bold'] ?  true : false,
+                text_font   = prop['chart.key.text.font'] || prop['chart.key.font'] || prop['chart.text.font'],
+                gutterLeft   = obj.gutterLeft,
+                gutterRight  = obj.gutterRight,
+                gutterTop    = obj.gutterTop,
+                gutterBottom = obj.gutterBottom,
+                hpos         = prop['chart.yaxispos'] == 'right' ? gutterLeft + 10 : ca.width - gutterRight - 10,
+                vpos         = gutterTop + 10,
+                title        = prop['chart.title'],
+                blob_size    = text_size, // The blob of color
+                hmargin      = 8, // This is the size of the gaps between the blob of color and the text
+                vmargin      = 4, // This is the vertical margin of the key
+                fillstyle    = prop['chart.key.background'],
+                text_color   = prop['chart.key.text.color'],
+                strokestyle  = '#333',
+                height       = 0,
+                width        = 0;
 
-            var gutterLeft   = obj.gutterLeft;
-            var gutterRight  = obj.gutterRight;
-            var gutterTop    = obj.gutterTop;
-            var gutterBottom = obj.gutterBottom;
-            var hpos         = prop['chart.yaxispos'] == 'right' ? gutterLeft + 10 : ca.width - gutterRight - 10;
-            var vpos         = gutterTop + 10;
-            var title        = prop['chart.title'];
-            var blob_size    = text_size; // The blob of color
-            var hmargin      = 8; // This is the size of the gaps between the blob of color and the text
-            var vmargin      = 4; // This is the vertical margin of the key
-            var fillstyle    = prop['chart.key.background'];
-            var text_color   = prop['chart.key.text.color'];
-            var strokestyle  = '#333';
-            var height       = 0;
-            var width        = 0;
-    
             if (!obj.coords) obj.coords = {};
             obj.coords.key = [];
     
@@ -241,24 +243,36 @@
                 ////////////////////////////////////////////////////////////////////////////////////////////
     
     
-    
+
                 // Draw the labels given
                 for (var i=key.length - 1; i>=0; i--) {
-                
+
                     var j = Number(i) + 1;
-    
+
                     /**
                     * Draw the blob of color
                     */
-                    if (typeof(prop['chart.key.color.shape']) == 'object' && typeof(prop['chart.key.color.shape'][i]) == 'string') {
+                    // An array element, string
+                    if (typeof prop['chart.key.color.shape'] === 'object' && typeof prop['chart.key.color.shape'][i] === 'string') {
                         var blob_shape = prop['chart.key.color.shape'][i];
                     
-                    } else if (typeof(prop['chart.key.color.shape']) == 'string') {
-                        var blob_shape = prop['chart.key.color.shape'];
-                    } else {
-                        var blob_shape = 'square';
-                    }
+                    // An array element, function
+                    } else if (typeof prop['chart.key.color.shape'] === 'object' && typeof prop['chart.key.color.shape'][i] === 'function') {
+                        var blob_shape = prop['chart.key.color.shape'][i];
                     
+                    // No array - just a string
+                    } else if (typeof prop['chart.key.color.shape'] === 'string') {
+                        var blob_shape = prop['chart.key.color.shape'];
+                    
+                    // No array - just a function
+                    } else if (typeof prop['chart.key.color.shape'] === 'function') {
+                        var blob_shape = prop['chart.key.color.shape'];
+
+                    // Unknown
+                    } else {
+                        var blob_shape = 'rect';
+                    }
+
                     if (blob_shape == 'circle') {
                         co.beginPath();
                             co.fillStyle = colors[i];
@@ -281,10 +295,25 @@
                         co.closePath();
                         co.fillStyle =  colors[i];
                         co.fill();
-                    
+
+                    } else if (typeof blob_shape === 'function') {
+
+                        blob_shape({
+                            object: obj,
+                            color: colors[i],
+                            x: hpos + 5,
+                            y: vpos + (5 * j) + (text_size * j) - text_size,
+                            width: text_size,
+                            height: text_size + 1
+                        });
                     } else {
                         co.fillStyle =  colors[i];
-                        co.fillRect(hpos + 5, vpos + (5 * j) + (text_size * j) - text_size, text_size, text_size + 1);
+                        co.fillRect(
+                            hpos + 5,
+                            vpos + (5 * j) + (text_size * j) - text_size,
+                            text_size,
+                            text_size + 1
+                        );
                     }
                     
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,16 +322,16 @@
     
                     co.beginPath();
                     co.fillStyle = typeof text_color == 'object' ? text_color[i] : text_color;
-                
-                    ret = RG.Text2(obj, {
-                        'font': text_font,
-                        'size': text_size,
-                        'bold': text_bold,
-                        'italic': text_italic,
-                        'x': hpos + blob_size + 5 + 5,
-                        'y': vpos + (5 * j) + (text_size * j) + 3,
-                        'text': key[i],
-                        'accessible': !obj.properties['chart.key.interactive']
+
+                    ret = RG.text2(obj, {
+                        font:       text_font,
+                        size:       text_size,
+                        bold:       text_bold,
+                        italic:     text_italic,
+                        x:          hpos + blob_size + 5 + 5,
+                        y:          vpos + (5 * j) + (text_size * j) + 3,
+                        text:       key[i],
+                        accessible: textAccessible
                     });
 
                     obj.coords.key[i] = [
@@ -475,8 +504,15 @@
     
     
                 // Draw the blob of color
-                if (typeof(prop['chart.key.color.shape']) == 'object' && typeof(prop['chart.key.color.shape'][i]) == 'string') {
+                if (typeof prop['chart.key.color.shape'] === 'object' && typeof prop['chart.key.color.shape'][i] === 'string') {
                     var blob_shape = prop['chart.key.color.shape'][i];
+                
+                } else if (typeof prop['chart.key.color.shape'] === 'object' && typeof prop['chart.key.color.shape'][i] === 'function') {
+                    var blob_shape = prop['chart.key.color.shape'][i];
+                
+                // No array - just a function
+                } else if (typeof prop['chart.key.color.shape'] === 'function') {
+                    var blob_shape = prop['chart.key.color.shape'];
                 
                 } else if (typeof(prop['chart.key.color.shape']) == 'string') {
                     var blob_shape = prop['chart.key.color.shape'];
@@ -516,7 +552,18 @@
                         co.lineTo(pos + blob_size, vpos + blob_size);
                     co.closePath();
                     co.fill();
-                
+
+                } else if (typeof blob_shape === 'function') {
+
+                    blob_shape({
+                        object: obj,
+                        color: colors[i],
+                        x: pos,
+                        y: vpos,
+                        width: blob_size,
+                        height: blob_size
+                    });
+
                 } else {
                 
                     co.beginPath();
@@ -540,14 +587,14 @@
                     co.fillStyle = (typeof text_color === 'object') ? text_color[i] : text_color;
 
                     var ret = RG.Text2(obj, {
-                        'font':text_font,
-                        'bold':text_bold,
-                        'size':text_size,
-                        'italic': text_italic,
-                        'x':pos,
-                        'y':vpos + text_size + 3,
-                        'text': key[i],
-                        accessible: !obj.properties['chart.key.interactive']
+                        font:       text_font,
+                        bold:       text_bold,
+                        size:       text_size,
+                        italic:     text_italic,
+                        x:          pos,
+                        y:          vpos + text_size + 1,
+                        text:       key[i],
+                        accessible: textAccessible
                     });
                 co.fill();
                 pos += co.measureText(key[i]).width;
@@ -683,12 +730,13 @@
     RGraph.HTML.Key = function (id, prop)
     {
         var div = doc.getElementById(id);
+        var uid = RG.createUID();
 
         
         /**
         * Create the table that becomes the key
         */
-        var str = '<table border="0" cellspacing="0" cellpadding="0" id="rgraph_key" style="display: inline;' + (function ()
+        var str = '<table border="0" cellspacing="0" cellpadding="0" id="rgraph_key_' + uid + '" style="display: inline;' + (function ()
             {
                 var style = ''
                 for (i in prop.tableCss) {
@@ -716,7 +764,7 @@
                 }
 
                 return style;
-            })() + 'display: inline-block; margin-right: 5px; margin-top: 4px; width: 15px; height: 15px; background-color: ' + prop.colors[i] + '"' + (prop.blobClass ? 'class="' + prop.blobClass + '"' : '') + '>&nbsp;</div><td>' + (prop.links && prop.links[i] ? '<a href="' + prop.links[i] + '">' : '') + '<span ' + (prop.labelClass ? 'class="' + prop.labelClass + '"' : '') + '" ' + (function ()
+            })() + 'display: inline-block; margin-right: 5px; margin-top: 4px; width: 15px; height: 15px; background-color: ' + prop.colors[i] + '"' + (prop.blobClass ? 'class="' + prop.blobClass + '"' : '') + '>&nbsp;</div><td>' + (prop.links && prop.links[i] ? '<a href="' + prop.links[i] + '">' : '') + '<span ' + (prop.labelClass ? 'class="' + prop.labelClass + '"' : '') + '" style="' + (function ()
             {
                 var style = '';
 
@@ -727,24 +775,25 @@
                 }
 
                 return style;
-            })() + (function ()
+            })() + ' ' + (function ()
             {
                 var style = '';
 
                 if (prop['labelCss_' + i]) {
+
                     for (var j in prop['labelCss_' + i]) {
                         style = style + j + ': ' + prop['labelCss_' + i][j] + ';';
                     }
                 }
 
-                return style ? 'style="' + style + '"' : '';
+                return style ? style + '"' : '"';
             })() + '>' + prop.labels[i] + '</span>' + (prop.links && prop.links[i] ? '</a>' : '') + '</td></tr>';
         }
-        
+
         div.innerHTML += (str + '</table>');
 
         // Return the TABLE object that is the HTML key
-        return doc.getElementById('rgraph_key');
+        return doc.getElementById('rgraph_key_' + uid);
     };
 
 

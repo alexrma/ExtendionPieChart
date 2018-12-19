@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -14,19 +14,90 @@
     * Initialise the various objects
     */
     RGraph = window.RGraph || {isRGraph: true};
+    
+
+
+
+
+
+
+
+    /**
+    * This function has been taken out of the RGraph.common.core.js file to
+    * enable the CSV reader to work standalone.
+    */
+    if (!RGraph.AJAX) RGraph.AJAX = function (url, callback)
+    {
+        // Mozilla, Safari, ...
+        if (window.XMLHttpRequest) {
+            var httpRequest = new XMLHttpRequest();
+
+        // MSIE
+        } else if (window.ActiveXObject) {
+            var httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        httpRequest.onreadystatechange = function ()
+        {
+            if (this.readyState == 4 && this.status == 200) {
+                this.__user_callback__ = callback;
+
+                this.__user_callback__(this.responseText);
+            }
+        }
+
+        httpRequest.open('GET', url, true);
+        httpRequest.send();
+    };
+
+
+
+
+
+
+
+
+    //
+    // Use the AJAX function above to fetch a string
+    //
+    if (!RGraph.AJAX.getString) RGraph.AJAX.getString = function (url, callback)
+    {
+        RGraph.AJAX(url, function ()
+        {
+            var str = String(this.responseText);
+
+            callback(str);
+        });
+    };
+
+
+
+
+
+
+
+
+    // This function simply creates UID. Formerly the function in
+    // RGraph.common.core.js was being used - but now the CSV code
+    // is now standalone, hence this function
+    if (!RGraph.createUID) RGraph.createUID = function ()
+    {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c)
+        {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    };
+
+
+
+
 
 
 
 
     RGraph.CSV = function (url, func)
     {
-        var RG  = RGraph,
-            ua  = navigator.userAgent,
-            ma  = Math;
-
-
-
-
         /**
         * Some default values
         */
@@ -38,6 +109,10 @@
         this.seperator = arguments[2] || ',';
         this.endofline = arguments[3] || /\r?\n/;
         this.uid       = RGraph.createUID();
+
+
+
+
 
 
 
@@ -115,6 +190,10 @@
     
             return arr;
         };
+
+
+
+
 
 
 
@@ -228,23 +307,30 @@
 
 
 
+
+
+
+
         /**
         * Returns a row of the CSV file
         * 
         * @param number index The index of the row to fetch
-        * @param        start OPTIONAL If desired you can specify a column to start at (which starts at 0 by default)
+        * @param        start OPTIONAL If desired you can specify a column to
+        *                              start at (which starts at 0 by default)
         */
         this.getRow = function (index)
         {
-            var row   = [];
-            var start = arguments[1] || 0;
+            var row   = [],
+                start = parseInt(arguments[1]) || 0;
 
-            for (var i=start; i<this.numcols; i+=1) {
-                row.push(this.data[index][i]);
-            }
-            
+            row = this.data[index].slice(start);
+
             return row;
         };
+
+
+
+
 
 
 
@@ -258,15 +344,23 @@
         this.getCol =
         this.getColumn = function (index)
         {
-            var col   = [];
-            var start = arguments[1] || 0;
+            var col   = [],
+                start = arguments[1] || 0;
 
-            for (var i=start; i<this.numrows; i+=1) {
-                col.push(this.data[i][index]);
+            for (var i=start; i<this.data.length; i+=1) {
+                if (this.data[i] && this.data[i][index]) {
+                    col.push(this.data[i][index]);
+                } else {
+                    col.push(null);
+                }
             }
             
             return col;
         };
+
+
+
+
 
 
 

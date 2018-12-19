@@ -1,4 +1,4 @@
-// version: 2017-02-18
+// version: 2018-10-26
     /**
     * o--------------------------------------------------------------------------------o
     * | This file is part of the RGraph package - you can learn more at:               |
@@ -6,7 +6,7 @@
     * |                          http://www.rgraph.net                                 |
     * |                                                                                |
     * | RGraph is licensed under the Open Source MIT license. That means that it's     |
-    * | totally free to use!                                                           |
+    * | totally free to use and there are no restrictions on what you can do with it!  |
     * o--------------------------------------------------------------------------------o
     */
 
@@ -133,7 +133,7 @@
             //
             // And without jQuery...
 
-            var scriptNode = document.createElement('SCRIPT');
+            var scriptNode = document.createElement('script');
             scriptNode.src = url;
             document.body.appendChild(scriptNode);
         };
@@ -170,7 +170,7 @@
 
             // Trim the array if required
             if (opt.trim) {
-                row = RGraph.arrayTrim(row);
+                row = RGraph.Sheets.arrayRTrim(row);
             }
 
             return row;
@@ -206,7 +206,7 @@
 
             // Trim the array if required
             if (opt.trim) {
-                col = RGraph.arrayTrim(col);
+                col = RGraph.Sheets.arrayRTrim(col);
             }
 
             // Now account for the start index
@@ -332,7 +332,7 @@
                 if (arguments[1] && arguments[1].trim === false) {
                     // Nada
                 } else {
-                    cells = RGraph.arrayTrim(cells);
+                    cells = RGraph.Sheets.arrayRTrim(cells);
                 }
 
                 return cells;
@@ -348,6 +348,29 @@
         //
         this.load(url, callback);
     };
+
+
+
+
+    RGraph.Sheets.arrayRTrim = function (arr)
+    {
+        var out = [], content = false;
+
+        // Trim the end
+        for (var i=(arr.length - 1); i>=0; i--) {
+            if (arr[i] || content) {
+                out.push(arr[i]);
+                content = true;
+            }
+        }
+        
+        arr = out.reverse();
+        
+        return out;
+    };
+
+
+
 
 // End module pattern
 })(window, document);
