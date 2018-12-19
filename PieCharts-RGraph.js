@@ -5,20 +5,21 @@
 //Date:		18 Dic 2018
 //Custom version: 0.1
 ////////////////////////////////////////////////////
+/** @namespace layout.qHyperCube */
 define( [
         // Load the properties.js file using requireJS
         // Note: If you load .js files, omit the file extension, otherwhise
         // requireJS will not load it correctly 
-		'jquery'
-		,'qlik'
-        ,'./properties/properties'
-		,'./properties/initialProperties'
-		,'./libraries/RGraph.common.core'
-		,'./libraries/RGraph.common.dynamic'
-		,'./libraries/RGraph.common.tooltips'
-		,'./libraries/RGraph.common.resizing'
+		'jquery',
+		'qlik',
+        './properties/properties',
+		'./properties/initialProperties',
+		'./libraries/RGraph.common.core',
+		'./libraries/RGraph.common.dynamic',
+		'./libraries/RGraph.common.tooltips',
+		'./libraries/RGraph.common.resizing',
 		//,'./libraries/RGraph.common.key'
-		,'./libraries/RGraph.pie'  
+		'./libraries/RGraph.pie'
 		
     ],
 	
@@ -29,7 +30,7 @@ define( [
         return {
 			//Define the properties tab - these are defined in the properties.js file
              definition: props,
-			
+
 			//Define the data properties - how many rows and columns to load.
 			 initialProperties: initProps,
 			
@@ -44,11 +45,12 @@ define( [
 			//paint function creates the visualisation. - this one makes a very basic table with no selections etc.
             paint: function ($element, layout) {
 			//debug propose only, please comment
+			
 		
-			//console.log(layout.qHyperCube.qDataPages[0].qMatrix);
 			//console.log("Paint method")
 			var app = qlik.currApp(this);
 			var that = this;
+			
 			// Get the Number of Dimensions and Measures on the hypercube
 			var numberOfDimensions = layout.qHyperCube.qDimensionInfo.length;
 			//console.log(numberOfDimensions);
@@ -80,7 +82,7 @@ define( [
 			var coloresEntrada = [];
 
 			coloresEntrada =(layout.colores).split(',');
-			console.log(coloresEntrada);
+			
 			
 			for (var i=0; i<numberOfDimValues;i++){					
 				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;			
@@ -94,17 +96,16 @@ define( [
 				dimArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qText;
 				dimArrayOriginal[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qText;
 				measArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qText;
-				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;		
+				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;
+
 				numIdentif[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qElemNumber;
 				porcentajeArray[i]=(((dataArray[i])/sumMedida)*100).toFixed(2);
 				arrayExplode[i]=0;
 				dimArray[i] = dimArray[i]+' ' + porcentajeArray[i] + '%';
-			}			
+			}	
 			
-					
-			
-			var dimensionLength=layout.qHyperCube.qDataPages[0].qMatrix.length;
-			
+
+			var dimensionLength=layout.qHyperCube.qDataPages[0].qMatrix.length;			
 			var chart;
 			
 			
@@ -165,7 +166,7 @@ define( [
 					break;
 				case 1: // Custom colors
 									
-					var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};
+					//var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};
 					
 						var palette = numIdentif.map(function(x) {
 						
@@ -226,9 +227,7 @@ define( [
 			}
 			layout.labelSticks
 			
-			
-			// se
-			
+	
 			
 			// Swtich between charts to draw below 
 			switch(layout.chartEffect) {
@@ -250,21 +249,7 @@ define( [
 					break;
 			}
 					
-			
-			
-			
-/* 			
-			var html = '';
-			
-			var width = $element.width(), height = $element.height();
-			html+='<div id="canvas-wrapper"><canvas id="cvs" width="'+width+'" height="'+height+'">[No canvas support]</canvas></div>';
-			
-			$element.html(html);
-			
-			RGraph.Reset(document.getElementById('cvs'));
-			
-	 */		
-			
+
 			//To generate random numbers to allow multiple charts to present on one sheet:
 			function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();};
 			function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
@@ -310,8 +295,7 @@ define( [
 							labelsSticksColors:false,
 							//radius: 150,
 							shadowOffsety: layout.shadowDepth,
-							shadowColor: shadowYN,
-							// ********************** you can change which segment explodes here, the first dimension in order is currently set [20,,] to explode by 20 pixels
+							shadowColor: shadowYN,							
 							exploded: explodeSegment2,
 							textAccessible: true,
 							eventsClick: onClickDimension,
@@ -375,15 +359,17 @@ define( [
 			// On Click actions
 			function onClickDimension (e, shape)
 			{
+				//var app = qlik.currApp(this);
+				//var that = this;
 				
-								
+						
 				var index = shape.index;
 				var obj = shape.object;
 				
 				
-				that.selectValues(0, elementNumber[index], false);
-				console.log(app.selectionState());
-				console.log(elementNumber[index]);
+				that.selectValues(0, [elementNumber[index]],true);
+				
+			
 				if(arrayExplode[index]!=0){
 					arrayExplode[index] = 0;
 				} else {

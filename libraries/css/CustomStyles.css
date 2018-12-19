@@ -1,0 +1,21 @@
+.qv-object-com-qliktech-horizlist .qv-object-content {
+	overflow: auto;
+}
+.qv-object-com-qliktech-horizlist ul {
+	list-style: none;
+}
+.qv-object-com-qliktech-horizlist li.data {
+	display: inline-block;
+	margin: 3px;
+	padding: 4px;
+	border-top: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-bottom: 1px solid #111;
+	border-right: 1px solid #111;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.qv-inline-edit-value {
+    color:red;
+}
