@@ -68,13 +68,16 @@ define( [
 			ref: "chartEffect",
 			options: [{
 				value: "2d",
-				label: "2D"
+				label: "2_D"
 			}, {
 				value: "3d",
 				label: "3D"
 			}, {
 				value: "Halo",
 				label: "Halo"
+			}, {
+				value: "test",
+				label: "Personalizado"
 			}
 			],
 			defaultValue: "2d"

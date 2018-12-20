@@ -5,7 +5,7 @@
 //Date:		18 Dic 2018
 //Custom version: 0.1
 ////////////////////////////////////////////////////
-/** @namespace layout.qHyperCube */
+
 define( [
         // Load the properties.js file using requireJS
         // Note: If you load .js files, omit the file extension, otherwhise
@@ -18,13 +18,13 @@ define( [
 		'./libraries/RGraph.common.dynamic',
 		'./libraries/RGraph.common.tooltips',
 		'./libraries/RGraph.common.resizing',
-		,'./libraries/RGraph.common.key',
-		,"./libraries/RGraph.drawing.rect",
+		'./libraries/RGraph.common.key',
+		'./libraries/RGraph.drawing.rect',
 		'./libraries/RGraph.pie'
 		
     ],
 	
-    function ( $, qlik, props, initProps,RCommonCore, RCommonDynamic, RCommonTooltips, RCommonresizable, RCommonKey, RPie, RBar, RDRRect, RFunnel) {
+    function ( $, qlik, props, initProps) {
         'use strict';	
 		//Inject Stylesheet into header of current document
 		//$( '<style>' ).html(styleSheet).appendTo( 'head' );
@@ -255,6 +255,10 @@ define( [
 					var chartTypeEffect = "Default";
 					var chartVariant = layout.chartType.concat(layout.chartEffect);
 					break;
+				case "test":
+					var chartTypeEffect = "test";
+					var chartVariant = layout.chartType.concat(layout.chartEffect);
+					break;
 			}
 					
 
@@ -313,6 +317,42 @@ define( [
 					}).draw();
 					break;
 
+					case "test":					
+					chart = new RGraph.Pie({
+						id: cvsId,
+						data: measArray,
+						options: {
+							gutterLeft: 50,
+							gutterRight: 50,
+							linewidth: 0,
+							strokestyle: 'rgba(0,0,0,0)',
+							tooltips: tooltipsArray,
+							tooltipsEvent: 'onmousemove',					
+							labels: labelsArray,						
+							colors: colorsArray,
+							variant: 'donut',
+							//radius: 100,
+							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
+
+							radius: layout.radiusValue,
+							shadowOffsety: 5,
+							shadowColor: '#aaa',
+							//exploded: [,,8],
+							textAccessible: false,
+							resizable: true,
+							labelsSticks: layout.labelSticks,
+							labelsSticksUsecolors: layout.labelSticksDefColor,
+							//labelsSticksColors:labelColorsArray,
+							labelsSticksLength: layout.labelsSticksLength,
+							labelsSticksLinewidth: layout.labelsSticksLinewidth,
+							textSize: layout.textFontSize,
+							labelsBold: layout.labelBold,
+							eventsClick: onClickDimensionPieAndDonut
+							//eventsMousemove: onMouseMove
+						}
+					}).draw();
+					break;						
+
 					// Draws Halo chart	
 					case "Halo":
 					chart = new RGraph.Pie({
@@ -335,7 +375,7 @@ define( [
 							//radius: 100,
 							//width: 50,
 							labelsSticksList: layout.labelSticks,
-							labelsSticksColors: '#aaa',
+							labelsSticksColors: true,
 							//radius: 80,
 							shadowOffsety: layout.shadowDepth,
 							shadowColor: shadowYN,
