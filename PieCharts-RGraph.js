@@ -45,32 +45,21 @@ define( [
 
 			//paint function creates the visualisation. - this one makes a very basic table with no selections etc.
             paint: function ($element, layout) {
-			//debug propose only, please comment
 			
-		
-			//console.log("Paint method")
 			var app = qlik.currApp(this);
 			var that = this;
 			
 			// Get the Number of Dimensions and Measures on the hypercube
-			var numberOfDimensions = layout.qHyperCube.qDimensionInfo.length;
-			//console.log(numberOfDimensions);
-			var numberOfMeasures = layout.qHyperCube.qMeasureInfo.length;
-		
-			//console.log(numberOfMeasures);
-			
 			// Get the Measure Name and the Dimension Name
-			var measureName = layout.qHyperCube.qMeasureInfo[0].qFallbackTitle;
-			//console.log(measureName);
-			var dimensionName = layout.qHyperCube.qDimensionInfo[0].qFallbackTitle;
-			//console.log(dimensionName);
-
-			
 			// Get the number of fields of a dimension
+			var numberOfDimensions = layout.qHyperCube.qDimensionInfo.length;			
+			var numberOfMeasures = layout.qHyperCube.qMeasureInfo.length;
+			var measureName = layout.qHyperCube.qMeasureInfo[0].qFallbackTitle;			
+			var dimensionName = layout.qHyperCube.qDimensionInfo[0].qFallbackTitle;			
 			var numberOfDimValues = layout.qHyperCube.qDataPages[0].qMatrix.length;
-			//console.log(numberOfDimValues);
 			
-			// Get the values of the dimension
+			
+			// Get the values of the dimension and default value of variables 
 			var dimArray =[];
 			var dimArrayOriginal=[];
 			var measArray =[];
@@ -115,11 +104,10 @@ define( [
 		
 			
 			
-			// manage color selections
+			// Color secction
 			
 			// ColorSets
-			// Red to Yellow (chart color 2 and 3)
-			
+			// Red to Yellow (chart color 2 and 3)			
 			switch(numberOfDimValues) {
 				case 1: var palette2 = ["#fb9a29"]; break;
 				case 2: var palette2 = ["#662506","#fff7bc"]; break;
@@ -193,7 +181,12 @@ define( [
 				} else {
 					var labelsSticksLength = 10;
 				}
-				
+			// set stick color lenth
+				if (layout.textFontSize) {
+					var textFontSize = layout.textFontSize;
+				} else {
+					var textFontSize = 10;
+				}
 			
 			// set exploding segments based off easy selection variable (will not store string required)
 			switch(layout.explodeSegment) {
@@ -298,22 +291,31 @@ define( [
 							strokestyle: segmentBorder2,
 							tooltips: dimArray,
 							tooltipsEvent: 'onmousemove',					
-							labels: labelsArray,						
+							labels: labelsArray,
+							key: labelsArray,						
 							colors: palette,
+							//keyInteractive:true,
 							variant: chartVariant,							
 							radius: layout.radiusValue,
 							shadowOffsety: 5,
 							shadowColor: '#aaa',
 							textAccessible: true,
+							exploded:explodeSegment2,
 							resizable: false,
 							labelsSticks: layout.labelSticks,
 							labelsSticksUsecolors: layout.labelSticksDefColor,
 							//labelsSticksColors:labelColorsArray,
 							labelsSticksLength: layout.labelsSticksLength,
 							labelsSticksLinewidth: layout.labelsSticksLinewidth,
-							textSize: layout.textFontSize,
+							textSize: textFontSize,
 							labelsBold: layout.labelBold,
-							eventsClick: onClickDimension
+							//explodedSegmentDist: layout.explodedSegmentDist,
+							eventsClick: onClickDimension,
+							keyPositionX:layout.legendPosH,
+							keyPositionY:layout.legendPosV,
+							keyPositionGraphBoxed:false,
+							keyPositionMarginBoxed:false
+
 							//eventsMousemove: onMouseMove
 						}
 					}).draw();
@@ -335,7 +337,9 @@ define( [
 							variant: 'donut',
 							//radius: 100,
 							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
-
+							key: labelsArray,
+							keyPositionX: layout.legendPosH,
+							keyPositionY: layout.legendPosV,
 							radius: layout.radiusValue,
 							shadowOffsety: 5,
 							shadowColor: '#aaa',
@@ -347,6 +351,7 @@ define( [
 							//labelsSticksColors:labelColorsArray,
 							labelsSticksLength: layout.labelsSticksLength,
 							labelsSticksLinewidth: layout.labelsSticksLinewidth,
+							textFontSize:layout.textFontSize,
 							textSize: layout.textFontSize,
 							labelsBold: layout.labelBold,
 							eventsClick: onClickDimension
@@ -420,7 +425,7 @@ define( [
 			// On Click actions
 			function onClickDimension (e, shape)
 			{
-				console.log(shape);				
+								
 				var index = shape.index;
 				var obj = shape.object;
 								
@@ -444,7 +449,7 @@ define( [
 			{
 				
 				
-							
+				var key = RGraph.Registry.get('key-element');		
 				
 			}					
 			

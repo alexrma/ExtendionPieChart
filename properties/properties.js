@@ -225,7 +225,27 @@ define( [
 			],
 			defaultValue: 5
 	};
-	
+						
+	var legendPosH = {
+		type: "number",
+		component: "slider",
+		label: "Posición de la leyenda - Horizontal",
+		ref: "legendPosH",
+		min: 1,
+		max: 1500,
+		step: 1,
+		defaultValue: 1
+	};
+	var legendPosV = {
+		type: "number",
+		component: "slider",
+		label: "Posición de la leyenda - Vetical",
+		ref: "legendPosV",
+		min: 1,
+		max: 1500,
+		step: 1,
+		defaultValue: 1
+	};	
 	
 	var segmentBorder = {
 			type: "boolean",
@@ -247,6 +267,43 @@ define( [
 		label: "Colores para dimensión",
 		type: "string",
 		expression: "optional"
+	};
+
+	var explodedSegmentDist = {
+		type: "number",
+		component: "slider",
+		label: "Distancia de los segmentos separados",
+		ref: "explodedSegmentDist",
+		min: 1,
+		max: 100,
+		step: 1,
+		defaultValue: 15
+	};
+
+	var labelBold = {
+		type: "boolean",
+		component: "switch",
+		label: "Etiqueta en negrita",
+		ref: "labelBold",
+		options: [{
+			value: true,
+			label: "On"
+		}, {
+			value: false,
+			label: "Off"
+		}],
+		defaultValue: false
+	};
+
+	var textFontSize = {
+		type: "number",
+		component: "slider",
+		label: "Tamaño de la fuente",
+		ref: "textFontSize",
+		min: 1,
+		max: 30,
+		step: 1,
+		defaultValue: 10
 	};
 
 	var labelsSticksLength = {		
@@ -276,7 +333,7 @@ define( [
 			label: "3D-Pie/Donut Radios",
 			ref: "radiusValue",
 			min: 1,
-			max: 200,
+			max: 250,
 			step: 1,
 			defaultValue: 100
 		};
@@ -340,7 +397,12 @@ define( [
 			labelSticksDefColor:labelSticksDefColor,
 			labelsSticksLength:labelsSticksLength,
 			labelsSticksLinewidth:labelsSticksLinewidth,
-			radius:radiusValue
+			radius:radiusValue,
+			textFontSize:textFontSize,
+			labelBold:labelBold,
+			legendPosH:legendPosH,
+			legendPosV:legendPosV
+			//explodedSegmentDist:explodedSegmentDist
 		}
 	
 	};
