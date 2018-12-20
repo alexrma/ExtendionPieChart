@@ -68,7 +68,7 @@ define( [
 			ref: "chartEffect",
 			options: [{
 				value: "2d",
-				label: "2_D"
+				label: "2D"
 			}, {
 				value: "3d",
 				label: "3D"
@@ -175,7 +175,7 @@ define( [
 	var labelSticksDefColor = {
 			type: "boolean",
 			component: "switch",
-			label: "Labels Sticks Default Colors",
+			label: "Color por defecto en las etiquetas ",
 			ref: "labelSticksDefColor",
 			options: [{
 				value: true,
@@ -252,12 +252,33 @@ define( [
 	var labelsSticksLength = {		
 			type: "number",
 			component: "slider",
-			label: "Labels Sticks Length",
+			label: "Longitud de las guias",
 			ref: "labelsSticksLength",
 			min: 0,
 			max: 50,
 			step: 1,
 			defaultValue: 8		
+		};
+	var labelsSticksLinewidth = {		
+			type: "number",
+			component: "slider",
+			label: "Grosor de la línea",
+			ref: "labelsSticksLinewidth",
+			min: 1,
+			max: 15,
+			step: 1,
+			defaultValue: 7	
+		};
+
+		var radiusValue = {		
+			type: "number",
+			component: "slider",
+			label: "3D-Pie/Donut Radios",
+			ref: "radiusValue",
+			min: 1,
+			max: 200,
+			step: 1,
+			defaultValue: 100
 		};
 	
 	
@@ -317,7 +338,9 @@ define( [
 			chartColor:chartColor,
 			colores:colores,
 			labelSticksDefColor:labelSticksDefColor,
-			labelsSticksLength:labelsSticksLength
+			labelsSticksLength:labelsSticksLength,
+			labelsSticksLinewidth:labelsSticksLinewidth,
+			radius:radiusValue
 		}
 	
 	};

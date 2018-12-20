@@ -849,19 +849,47 @@
                     /**
                     * Coords for the text
                     */
+                   if( a > 4.4 && a  < 4.5){
+
                     var x = cx + explosion_offsetx + ((r + 10)* Math.cos(a)) + (prop['chart.labels.sticks'] ? (a < RG.HALFPI || a > (RG.TWOPI + RG.HALFPI) ? 2 : -2) : 0),
-                        y = cy + explosion_offsety + (((r + 10) * Math.sin(a)));
-                        
+                    y = cy + explosion_offsety - (3 * a) + (((r + 10) * Math.sin(a)));
+                                         
+
+                   } else if( a >4.5 && a  < 4.65 ){
+                    var x = cx + explosion_offsetx + ((r + 10)* Math.cos(a)) + (prop['chart.labels.sticks'] ? (a < RG.HALFPI || a > (RG.TWOPI + RG.HALFPI) ? 2 : -2) : 0),
+                    y = cy + explosion_offsety - (5 * a) + (((r + 10) * Math.sin(a)));
+                  
+                   }else if( a >= 4.65 ){
+                    var x = cx + explosion_offsetx + ((r + 10)* Math.cos(a)) + (prop['chart.labels.sticks'] ? (a < RG.HALFPI || a > (RG.TWOPI + RG.HALFPI) ? 2 : -2) : 0),
+                    y = cy + explosion_offsety - (8 * a) + (((r + 10) * Math.sin(a)));
+                  
+                   }
+                   else{
+                    var x = cx + explosion_offsetx + ((r + 10)* Math.cos(a)) + (prop['chart.labels.sticks'] ? (a < RG.HALFPI || a > (RG.TWOPI + RG.HALFPI) ? 2 : -2) : 0),
+                    y = cy + explosion_offsety + (((r + 10) * Math.sin(a)));
+                            
+                   }
+                    
 
 
 
                     /**
                     *  If sticks are enabled use the endpoints that have been saved
                     */
+                   if(a >= 4.65 ){
                     if (this.coordsSticks && this.coordsSticks[i]) {
+                     
+                        var x = this.coordsSticks[i][4][0] + (x < cx ? 5 : 5),
+                            y = this.coordsSticks[i][4][1];
+                    }
+                   }else{
+                    if (this.coordsSticks && this.coordsSticks[i]) {
+                     
                         var x = this.coordsSticks[i][4][0] + (x < cx ? -5 : 5),
                             y = this.coordsSticks[i][4][1];
                     }
+                   }
+                  
 
 
                     /**
@@ -1178,31 +1206,43 @@
                 /**
                 * Determine the stick length
                 */
+               
+              
                 var stickLength = typeof prop['chart.labels.sticks.length'] === 'object' ? prop['chart.labels.sticks.length'][i] : prop['chart.labels.sticks.length'];
-                
+                var evalAngle =segment[1]-segment[0];
+                var extraLittleAngles=0;
+               
+                if(0.14 > evalAngle > 0.1){
+                    extraLittleAngles = 20 * (1 - evalAngle);                  
+                   
+                }else if(evalAngle < 0.1){
+                    extraLittleAngles = 35 * (1 - evalAngle);  
+                }else{
+                    extraLittleAngles = 0;    
+                }
 
-                points[0] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + extra + offset);
-                points[1] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra - 5);
+                points[0] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + extra + offset +extraLittleAngles); 
+                points[1] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra - 5 +extraLittleAngles);
                 
-                points[2] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra);
+                points[2] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra + extraLittleAngles);
                 
-                points[3] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra);
-                points[3][0] += (points[3][0] > cx ? 5 : -5);
+                points[3] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra );
+                points[3][0] += (points[3][0] > cx ? 5 + extraLittleAngles: -5 + extraLittleAngles);
                 
                 points[4] = [
-                    points[2][0] + (points[2][0] > cx ? 5 + prop['chart.labels.sticks.hlength'] : -5 - prop['chart.labels.sticks.hlength']),
+                    points[2][0] + (points[2][0] > cx ? 5 + prop['chart.labels.sticks.hlength'] + extraLittleAngles : -5 - prop['chart.labels.sticks.hlength'] + extraLittleAngles),
                     points[2][1]
                 ];
 
-
-                co.moveTo(points[0][0], points[0][1]);
+               
+                co.moveTo(points[0][0], points[0][1] + extraLittleAngles);
                 co.quadraticCurveTo(
                     points[2][0],
                     points[2][1],
                     points[4][0],
                     points[4][1]
                 );
-    
+              
                 co.stroke();
                 
                 /**
@@ -1215,6 +1255,7 @@
                     points[3],
                     points[4]
                 ];
+               
             }
         };
 

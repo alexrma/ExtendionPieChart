@@ -193,7 +193,7 @@ define( [
 				} else {
 					var labelsSticksLength = 10;
 				}
-				console.log(labelsSticksLength);
+				
 			
 			// set exploding segments based off easy selection variable (will not store string required)
 			switch(layout.explodeSegment) {
@@ -257,10 +257,10 @@ define( [
 					break;
 				case "test":
 					var chartTypeEffect = "test";
-					var chartVariant = layout.chartType.concat(layout.chartEffect);
+					var chartVariant = layout.chartType;
 					break;
 			}
-					
+					console.log(chartTypeEffect);
 
 			//To generate random numbers to allow multiple charts to present on one sheet:
 			function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();};
@@ -279,7 +279,7 @@ define( [
 			
 			RGraph.Reset(document.getElementById(tmpCVSID));
 
-			console.log('Antes del switch '+labelsSticksLength);
+			
 			
 			switch(chartTypeEffect) {
 				// Draws default pie chart
@@ -301,35 +301,37 @@ define( [
 							labels: labelsArray,						
 							colors: palette,
 							variant: chartVariant,							
-							//radius: 100,
-							labelsSticksList: layout.labelSticks,
-							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
-							labelsSticksColors:layout.labelSticksDefColor,
-							labelsSticksLength: 1,
-							//radius: 150,
-							shadowOffsety: layout.shadowDepth,
-							shadowColor: shadowYN,							
-							exploded: explodeSegment2,
+							radius: layout.radiusValue,
+							shadowOffsety: 5,
+							shadowColor: '#aaa',
 							textAccessible: true,
-							eventsClick: onClickDimension,
-							eventsMousemove: onMouseMove,
+							resizable: false,
+							labelsSticks: layout.labelSticks,
+							labelsSticksUsecolors: layout.labelSticksDefColor,
+							//labelsSticksColors:labelColorsArray,
+							labelsSticksLength: layout.labelsSticksLength,
+							labelsSticksLinewidth: layout.labelsSticksLinewidth,
+							textSize: layout.textFontSize,
+							labelsBold: layout.labelBold,
+							eventsClick: onClickDimension
+							//eventsMousemove: onMouseMove
 						}
 					}).draw();
 					break;
 
-					case "test":					
+					case "test":
 					chart = new RGraph.Pie({
-						id: cvsId,
+						id: tmpCVSID,
 						data: measArray,
 						options: {
 							gutterLeft: 50,
 							gutterRight: 50,
 							linewidth: 0,
 							strokestyle: 'rgba(0,0,0,0)',
-							tooltips: tooltipsArray,
+							tooltips: dimArray,
 							tooltipsEvent: 'onmousemove',					
 							labels: labelsArray,						
-							colors: colorsArray,
+							colors: palette,
 							variant: 'donut',
 							//radius: 100,
 							//labelsSticksColors: [,'#cc0',,,'#0f0',,'black'],
@@ -339,7 +341,7 @@ define( [
 							shadowColor: '#aaa',
 							//exploded: [,,8],
 							textAccessible: false,
-							resizable: true,
+							resizable: false,
 							labelsSticks: layout.labelSticks,
 							labelsSticksUsecolors: layout.labelSticksDefColor,
 							//labelsSticksColors:labelColorsArray,
@@ -347,9 +349,19 @@ define( [
 							labelsSticksLinewidth: layout.labelsSticksLinewidth,
 							textSize: layout.textFontSize,
 							labelsBold: layout.labelBold,
-							eventsClick: onClickDimensionPieAndDonut
+							eventsClick: onClickDimension
 							//eventsMousemove: onMouseMove
 						}
+					}).on('draw', function(obj)
+					{
+						RGraph.path2(
+							obj.context,
+							'lw 5 b a % % % 0 6.2830 false s white',
+							obj.centerx,
+							obj.centery,
+							obj.radius - 12
+						);
+
 					}).draw();
 					break;						
 
@@ -386,6 +398,7 @@ define( [
 						}
 					}).on('draw', function(obj)
 							{
+								
 								RGraph.path2(
 									obj.context,
 									'lw 5 b a % % % 0 6.2830 false s white',
@@ -407,7 +420,7 @@ define( [
 			// On Click actions
 			function onClickDimension (e, shape)
 			{
-									
+				console.log(shape);				
 				var index = shape.index;
 				var obj = shape.object;
 								
@@ -418,6 +431,7 @@ define( [
 				} else {
 					arrayExplode[index] = 15;
 				}
+				
 				
 				obj.explodeSegment(arrayExplode, 15);				
 				obj.set('exploded', arrayExplode);				
