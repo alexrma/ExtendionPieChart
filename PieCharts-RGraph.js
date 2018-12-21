@@ -46,6 +46,9 @@ define( [
 			//paint function creates the visualisation. - this one makes a very basic table with no selections etc.
             paint: function ($element, layout) {
 			
+			var sizeObjH = $element.height();
+			var sizeObjW = $element.width();
+			
 			var app = qlik.currApp(this);
 			var that = this;
 			
@@ -183,6 +186,11 @@ define( [
 					var leyendStyleOp = dimArrayOriginal;
 				break;				
 				
+			}
+
+			//Hide leyend conditions
+			if(sizeObjH  < 550 || sizeObjW < 650){
+				var leyendStyleOp = false;
 			}
 			
 			
