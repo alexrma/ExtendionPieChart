@@ -112,6 +112,26 @@ define( [
 			],
 			defaultValue: 1
 	};
+	var leyendStyle = {
+		type: "string",
+		component: "dropdown",
+		label: "Opciones de leyenda",
+		ref: "leyendStyle",
+		options: [{
+			value: 1,
+			label: "Leyenda no visible"
+		}, {
+			value: 2,
+			label: "Leyenda con cuota"
+		}, {
+			value: 3,
+			label: "Leyenda sin cuota"
+		}
+		
+		],
+		defaultValue: 1
+};
+
 
 	
 	var chartLabels = {
@@ -225,6 +245,16 @@ define( [
 			],
 			defaultValue: 5
 	};
+	var variantDonutWidth = {
+		type: "number",
+		component: "slider",
+		label: "Grosor del donut",
+		ref: "variantDonutWidth",
+		min: 1,
+		max: 200,
+		step: 1,
+		defaultValue: 50
+	};
 						
 	var legendPosH = {
 		type: "number",
@@ -245,7 +275,18 @@ define( [
 		max: 1500,
 		step: 1,
 		defaultValue: 1
-	};	
+	};
+	var numDecimals = {
+		type: "number",
+		component: "slider",
+		label: "Número de decimales en la cuota",
+		ref: "numDecimals",
+		min: 0,
+		max: 5,
+		step: 1,
+		defaultValue: 1
+	};		
+	
 	
 	var segmentBorder = {
 			type: "boolean",
@@ -401,7 +442,10 @@ define( [
 			textFontSize:textFontSize,
 			labelBold:labelBold,
 			legendPosH:legendPosH,
-			legendPosV:legendPosV
+			legendPosV:legendPosV,
+			leyendStyle:leyendStyle,
+			numDecimals:numDecimals,
+			variantDonutWidth:variantDonutWidth
 			//explodedSegmentDist:explodedSegmentDist
 		}
 	
@@ -409,8 +453,8 @@ define( [
 	
     // *****************************************************************************
     // Main property panel definition
-    // ~~
-    // Only what's defined here will be returned from properties.js
+    // **
+    // Properties that will be returned from properties.js
     // *****************************************************************************
 	  
 	//******************************************************************************

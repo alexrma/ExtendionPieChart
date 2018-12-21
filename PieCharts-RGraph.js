@@ -71,7 +71,8 @@ define( [
 			var sumMedida = 0;			
 			var coloresEntrada = [];
 			var labelsSticksLength = 0;
-
+			
+			//Set colors enter in the layout
 			coloresEntrada =(layout.colores).split(',');
 			
 			
@@ -79,8 +80,21 @@ define( [
 				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;		
 				
 			}
-			for (var i = 0; i < dataArray.length; i++) {
+
+			var sumMedida = dataArray.reduce((a, b) => a + b, 0);
+			/*for (var i = 0; i < dataArray.length; i++) {
 				sumMedida += dataArray[i]
+			}*/		
+			
+
+			switch(layout.numDecimals){
+				case 0: var numDecimals =0 ; break;
+				case 1: var numDecimals = 1; break;
+				case 2: var numDecimals = 2; break;
+				case 3: var numDecimals = 3; break;
+				case 4: var numDecimals = 4; break;
+				case 4: var numDecimals = 5; break;				
+				default: var numDecimals = 2;
 			}
 
 			for (var i=0; i<numberOfDimValues;i++){
@@ -91,7 +105,7 @@ define( [
 				dataArray[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][1].qNum;
 
 				numIdentif[i] = layout.qHyperCube.qDataPages[0].qMatrix[i][0].qElemNumber;
-				porcentajeArray[i]=(((dataArray[i])/sumMedida)*100).toFixed(2);
+				porcentajeArray[i]=(((dataArray[i])/sumMedida)*100).toFixed(numDecimals);
 				arrayExplode[i]=0;
 				dimArray[i] = dimArray[i]+' ' + String(porcentajeArray[i]) + '%';
 			}	
@@ -104,9 +118,8 @@ define( [
 		
 			
 			
-			// Color secction
+			// Color secction			
 			
-			// ColorSets
 			// Red to Yellow (chart color 2 and 3)			
 			switch(numberOfDimValues) {
 				case 1: var palette2 = ["#fb9a29"]; break;
@@ -155,16 +168,26 @@ define( [
 				case 6: // 3d effect colors
 					var palette = palette6;
 					break;
-				case 1: // Custom colors
-									
-					//var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};
-					
-						var palette = numIdentif.map(function(x) {
-						
+				case 1: // Custom colors for dimension									
+					//var colores = {0:"#FF8F11",1:"#10BE00",2:"#76D7C4",3:"#117A65",4:"#F2E85B",5:"#E74C3C",6:"#2471a3",7:"#fe98fe",8:"#9b59b6",9:"#000000"};					
+						var palette = numIdentif.map(function(x) {						
 							return coloresEntrada[x];
-						});
-					
+						});					
+				break;
+			}
+			
+			switch(layout.leyendStyle) {
+				
+				case 1: // Leyenda no visible
+					var leyendStyleOp = false;
 					break;
+				case 2: // Leyenda con cuota
+					var leyendStyleOp = dimArray;
+					break;
+				case 3: // Leyenda sin cuota
+					var leyendStyleOp = dimArrayOriginal;
+				break;				
+				
 			}
 			
 			
@@ -252,8 +275,12 @@ define( [
 					var chartTypeEffect = "test";
 					var chartVariant = layout.chartType;
 					break;
+				case "funnel":
+					var chartTypeEffect = "funnel";
+					var chartVariant = layout.chartType;
+					break;
 			}
-					console.log(chartTypeEffect);
+					
 
 			//To generate random numbers to allow multiple charts to present on one sheet:
 			function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();};
@@ -292,11 +319,13 @@ define( [
 							tooltips: dimArray,
 							tooltipsEvent: 'onmousemove',					
 							labels: labelsArray,
-							key: labelsArray,						
+							//key: labelsArray,	
+							key:leyendStyleOp,					
 							colors: palette,
 							//keyInteractive:true,
 							variant: chartVariant,							
 							radius: layout.radiusValue,
+							variantDonutWidth: layout.variantDonutWidth,
 							shadowOffsety: 5,
 							shadowColor: '#aaa',
 							textAccessible: true,
@@ -315,6 +344,7 @@ define( [
 							keyPositionY:layout.legendPosV,
 							keyPositionGraphBoxed:false,
 							keyPositionMarginBoxed:false
+						
 
 							//eventsMousemove: onMouseMove
 						}
@@ -357,16 +387,6 @@ define( [
 							eventsClick: onClickDimension
 							//eventsMousemove: onMouseMove
 						}
-					}).on('draw', function(obj)
-					{
-						RGraph.path2(
-							obj.context,
-							'lw 5 b a % % % 0 6.2830 false s white',
-							obj.centerx,
-							obj.centery,
-							obj.radius - 12
-						);
-
 					}).draw();
 					break;						
 
@@ -414,10 +434,7 @@ define( [
 
 							}).draw();
 					break;
-				
-					
-			}
-			
+			}	
 			
 
 			
@@ -428,7 +445,11 @@ define( [
 								
 				var index = shape.index;
 				var obj = shape.object;
-								
+				
+				//obj.Set('radius', 250)
+				//obj.Set('variant', 'donut')
+				//obj.Set('variant.donut.width', 50)
+
 				that.selectValues(0, [elementNumber[index]],true);				
 			
 				if(arrayExplode[index]!=0){
