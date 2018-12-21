@@ -67,8 +67,7 @@ define( [
 			var porcentajeArray =[];
 			var numIdentif =[];
 			var elementNumber = [];
-			var arrayExplode = [];
-			var sumMedida = 0;			
+			var arrayExplode = [];					
 			var coloresEntrada = [];
 			var labelsSticksLength = 0;
 			
@@ -113,10 +112,6 @@ define( [
 
 			var dimensionLength=layout.qHyperCube.qDataPages[0].qMatrix.length;			
 			var chart;
-			
-			
-		
-			
 			
 			// Color secction			
 			
