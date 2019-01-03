@@ -236,6 +236,8 @@ define( [
 					break;
 			}
 			
+
+			
 			
 			// set segment border color to allow border to switch on and off
 			if (layout.segmentBorder) {
@@ -245,16 +247,12 @@ define( [
 			}
 			
 			
-			
 			// Activate or Deactivate Labels Sticks as sticks should not show if labels not selected.
 			if (layout.chartLabels) {
 				var labelsArray = dimArray;
 			} else {
 				var labelsArray = [];
-			}
-			
-			
-	
+			}	
 			
 			// Swtich between charts to draw below 
 			switch(layout.chartEffect) {
@@ -297,12 +295,8 @@ define( [
 			// add canvas for chart			
 			html+='<div id="canvas-wrapper"><canvas id="' + tmpCVSID + '" width="'+width+'" height="'+height+'">[No canvas support]</canvas></div>';
 
-			$element.html(html);
-
-			
-			RGraph.Reset(document.getElementById(tmpCVSID));
-
-			
+			$element.html(html);			
+			RGraph.Reset(document.getElementById(tmpCVSID));			
 			
 			switch(chartTypeEffect) {
 				// Draws default pie chart
@@ -347,8 +341,6 @@ define( [
 							keyPositionY:layout.legendPosV,
 							keyPositionGraphBoxed:false,
 							keyPositionMarginBoxed:false
-						
-
 							//eventsMousemove: onMouseMove
 						}
 					}).draw();
@@ -472,17 +464,13 @@ define( [
 			function onMouseMove (e, shape)
 			{
 				
-				
-				var key = RGraph.Registry.get('key-element');		
+						
 				
 			}					
 			
 			//needed for export
 			return qlik.Promise.resolve();
-		}	
-		
-		
-		
+		}		
 	};
 
 } );

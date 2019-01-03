@@ -1209,17 +1209,31 @@
                
               
                 var stickLength = typeof prop['chart.labels.sticks.length'] === 'object' ? prop['chart.labels.sticks.length'][i] : prop['chart.labels.sticks.length'];
-                var evalAngle =segment[1]-segment[0];
-                var extraLittleAngles=0;
+                var testname = typeof prop['chart.labels'] === 'object' ? prop['chart.labels'][i] : prop['chart.labels'];
                
-                if(0.14 > evalAngle > 0.1){
-                    extraLittleAngles = 20 * (1 - evalAngle);                  
-                   
-                }else if(evalAngle < 0.1){
-                    extraLittleAngles = 35 * (1 - evalAngle);  
-                }else{
-                    extraLittleAngles = 0;    
+                //var evalAngle =Math.abs(segment[1]-segment[0]);
+                let evalAngle = 0;
+                 evalAngle = (this.subTotal-segment[1]).toFixed(2);
+               var extraLittleAngles = 0;
+                var calculoAngulo =((2-evalAngle)*20).toFixed(2);
+             
+                
+                var extraLittleAngles=0;
+               //TODO: Transformar esto de forma más elegante (se trata del ajuste para los elementos de menores porcentajes)
+                if(0.36 > evalAngle && evalAngle>= 0.2){
+                    extraLittleAngles = calculoAngulo/4; 
+                }else if(0.2 > evalAngle && evalAngle >= 0.15){
+                    extraLittleAngles = calculoAngulo/3;
+                }else if(0.15 > evalAngle && evalAngle >= 0.1){                  
+                    extraLittleAngles = calculoAngulo/2;
+                }else if( evalAngle < 0.1){
+                    extraLittleAngles =calculoAngulo/1.5;
+                }else if(evalAngle == 0){                   
+                    extraLittleAngles =calculoAngulo;
+                }else{                    
+                    extraLittleAngles = 0;                        
                 }
+               
 
                 points[0] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + extra + offset +extraLittleAngles); 
                 points[1] = RG.getRadiusEndPoint(cx, cy, midpoint, radius + stickLength + extra - 5 +extraLittleAngles);

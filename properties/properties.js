@@ -192,6 +192,17 @@ define( [
 			]
 	};
 
+	/*var explodeSegment = {
+		type: "number",
+		component: "slider",
+		label: "Expandir segmento",
+		ref: "explodeSegment",
+		min: 1,
+		max: 25,
+		step: 1,
+		defaultValue: 0
+	};*/
+
 	var labelSticksDefColor = {
 			type: "boolean",
 			component: "switch",
