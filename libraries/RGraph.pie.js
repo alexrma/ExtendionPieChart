@@ -1212,7 +1212,7 @@
                 var testname = typeof prop['chart.labels'] === 'object' ? prop['chart.labels'][i] : prop['chart.labels'];
                
                 //var evalAngle =Math.abs(segment[1]-segment[0]);
-                let evalAngle = 0;
+                var evalAngle = 0;
                  evalAngle = (this.subTotal-segment[1]).toFixed(2);
                var extraLittleAngles = 0;
                 var calculoAngulo =((2-evalAngle)*20).toFixed(2);
